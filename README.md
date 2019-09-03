@@ -1,6 +1,7 @@
 # Consumption Tracker
 
-CT is a program that tracks your daily water and calories consumption.
+Consumption Tracker is a program that tracks daily water and calories consumption through simple user input.
+
 This is a practice project made by a beginner with 3-4 months of learning experience. Treat it as such.
 
 ![Alt Text](https://i.imgur.com/21M3Xrf.gif)
