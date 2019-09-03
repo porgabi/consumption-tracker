@@ -19,7 +19,7 @@ This is a practice project made by a beginner with 3-4 months of learning experi
 * light/dark mode
 
 ## Before running the program:
-* **unzip** all
+* unzip all
 * make sure **CT_icons** is in the same folder as **CT.exe** (otherwise images in the application will not be displayed)
 
 ## Built with:
