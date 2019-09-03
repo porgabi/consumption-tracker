@@ -8,19 +8,19 @@ This is a practice project made by a beginner with 3-4 months of learning experi
 
 ## Features:
 
-* management of consumption via several buttons of varying values
-* simple and straightforward display of current values
-* widget to log meal times (max 6 at once)
-* adjustable maximum values for water and calories to reasonable extents
-* option to auto-reset all values and meal times in the morning
-* selectable male/female body silhouettes
-* function to manually reset all values and meal times
-* function to save a screenshot of the current state of application
-* light/dark mode
+* Management of consumption via several buttons of varying values
+* Simple and straightforward display of current values
+* Widget to log meal times (max 6 at once)
+* Adjustable maximum values for water and calories to reasonable extents
+* Option to auto-reset all values and meal times in the morning
+* Selectable male/female body figures
+* Function to manually reset all values and meal times
+* Function to save a screenshot of the current state of application
+* Light/dark mode
 
 ## Before running the program:
-* unzip all
-* make sure **CT_icons** is in the same folder as **CT.exe** (otherwise images in the application will not be displayed)
+* Unzip all
+* Make sure **CT_icons** is in the same folder as **CT.exe** (otherwise images in the application will not be displayed)
 
 ## Built with:
 * [Python 3.6.0](https://www.python.org/downloads/release/python-360/)
