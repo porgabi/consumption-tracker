@@ -1,23 +1,23 @@
 {
     "saved_variables": [
         {
-            "current_calories": 3000,
-            "current_water": 1000,
-            "meal_logger_presses": 3,
+            "current_calories": 0,
+            "current_water": 0,
+            "meal_logger_presses": 0,
             "light_on": "True",
             "ss_directory": "C:/Users/Adm/Desktop/cts",
             "first_meal": "1. Meal at 08:00.",
-            "second_meal": "1. Meal at 08:00.\n\n2. Meal at 08:00.",
+            "second_meal": "1. Meal at 08:00.\n\n2. Meal at 12:58.",
             "third_meal": "1. Meal at 08:00.\n\n2. Meal at 08:00.\n\n3. Meal at 14:39.",
             "fourth_meal": "1. Meal at 20:45.\n\n2. Meal at 20:45.\n\n3. Meal at 20:45.\n\n4. Meal at 20:45.",
             "fifth_meal": "1. Meal at 20:27.\n\n2. Meal at 20:27.\n\n3. Meal at 20:27.\n\n4. Meal at 20:28.\n\n5. Meal at 20:28.",
             "sixth_meal": "1. Meal at 20:27.\n\n2. Meal at 20:27.\n\n3. Meal at 20:27.\n\n4. Meal at 20:28.\n\n5. Meal at 20:28.\n\n6. Meal at 20:28.",
-            "saved_hour": 14,
-            "saved_minute": 39,
+            "saved_hour": 8,
+            "saved_minute": 0,
             "current_body": "female_light",
-            "reset_app_value": "True",
+            "reset_app_value": "False",
             "last_time": [
-                2,
+                3,
                 9,
                 2019
             ],
