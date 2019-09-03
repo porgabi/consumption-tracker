@@ -1,5 +1,5 @@
-# Fix qt import error
-# Include this file before import PyQt5 
+# File is necessary to fix qt import error when using pyinstaller
+# When making an exe, import this file before importing PyQt5
 
 import os
 import sys
