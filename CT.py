@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import filedialog
 import sys, pyautogui, os, datetime, json, webbrowser
+import fix_qt_import_error
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 
@@ -28,7 +29,6 @@ class ConsumptionTracker():
         self.current_time = datetime.datetime(self.current_time_raw.year,
                                               self.current_time_raw.month,
                                               self.current_time_raw.day)
-        # in case previous time hasn't been saved yet
         self.previous_time = self.current_time
         self.max_water = 3000
         self.max_calories = 2500
@@ -1043,7 +1043,7 @@ class ConsumptionTracker():
             }""")
             QtWidgets.QMessageBox.information(MainWindow,
                 'About CT', 
-                "Version: v1.0\nRelease date: DD/MM/YY\nMade in: Python 3.6/PyQt5\nTested on: Windows 10 (x64)",
+                "Version: v1.0.0\nRelease date: 03/09/2019\nMade in: Python 3.6.0/PyQt5 5.13.0\nTested on: Windows 10 (x64)",
                 QtWidgets.QMessageBox.Ok)
             app.setStyleSheet("""QPushButton {
             background-color: white;
@@ -1055,7 +1055,7 @@ class ConsumptionTracker():
         else:
             QtWidgets.QMessageBox.information(MainWindow,
                 'About CT', 
-                "Version: v1.0\nRelease date: DD/MM/YY\nMade in: Python 3.6/PyQt5\nTested on: Windows 10 (x64)",
+                "Version: v1.0.0\nRelease date: 03/09/2019\nMade in: Python 3.6.0/PyQt5 5.13.0\nTested on: Windows 10 (x64)",
                 QtWidgets.QMessageBox.Ok)
 
     def open_project_page(self):
@@ -1071,7 +1071,7 @@ class ConsumptionTracker():
                 'View project page', 'This will open a new browser tab.', 
                 QtWidgets.QMessageBox.Ok | QtWidgets.QMessageBox.Cancel)
             if choice == QtWidgets.QMessageBox.Ok:
-                webbrowser.open_new_tab('https://github.com/porgabi/consumption-tracker-v1')
+                webbrowser.open_new_tab('https://github.com/porgabi/consumption-tracker')
             app.setStyleSheet("""QPushButton {
             background-color: white;
             color: black;
@@ -1084,7 +1084,7 @@ class ConsumptionTracker():
                 'View project page', 'This will open a new browser tab.', 
                 QtWidgets.QMessageBox.Ok | QtWidgets.QMessageBox.Cancel)
             if choice == QtWidgets.QMessageBox.Ok:
-                webbrowser.open_new_tab('https://github.com/porgabi/consumption-tracker-v1')
+                webbrowser.open_new_tab('https://github.com/porgabi/consumption-tracker')
 
     # TOOLBAR functions
     def resetApp(self):
@@ -1111,7 +1111,6 @@ class ConsumptionTracker():
         current_time_raw = datetime.datetime.now()
         current_time = current_time_raw.strftime('%H-%M-%S_%d-%m-%Y')
         
-        # check if ss_directory exists, create new folder if it doesn't
         if self.ss_directory == "":
             try:
                 os.mkdir(self.home_path + '\\CT_screenshots')
@@ -1119,11 +1118,6 @@ class ConsumptionTracker():
                 pass
             self.ss_directory = self.home_path + '\\CT_screenshots'            
             ss.save(self.ss_directory + '\\' + current_time + '.png')
-            # if 'CT_screenshots' in os.listdir(self.home_path):
-            #     self.ss_directory = self.home_path + '\\CT_screenshots'
-            # else:
-            #     os.mkdir(self.home_path + '\\CT_screenshots')
-            #     self.ss_directory = self.home_path + '\\CT_screenshots'
         else:
             ss.save(self.ss_directory + '\\' + current_time + '.png')
         self.save_data()
@@ -1666,11 +1660,6 @@ class ConsumptionTracker():
         self.set_calories_3500cal_action.setText(_translate("MainWindow", "3500 cal"))
         self.set_calories_4000cal_action.setText(_translate("MainWindow", "4000 cal"))
 
-
-
-        # self.menuSubmenu.setTitle(_translate("MainWindow", "Submenu"))
-        # self.menuEdit.setTitle(_translate("MainWindow", "Edit"))
-        # self.actionSubmenu_option.setText(_translate("MainWindow", "Submenu option"))
         self.reset_values_action.setText(_translate("MainWindow", "Reset app in the morning"))
         self.select_action.setText(_translate("MainWindow", "Set screenshots folder"))
         
