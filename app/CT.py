@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import filedialog
 import sys, pyautogui, os, datetime, json, webbrowser
-# import fix_qt_import_error    # uncomment when making an exe w pyinstaller
+# import fix_qt_import_error    # uncomment when making an exe with pyinstaller
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 
