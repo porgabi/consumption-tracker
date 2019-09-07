@@ -87,7 +87,8 @@ class ConsumptionTracker():
         MainWindow.setObjectName("MainWindow")
         MainWindow.setFixedSize(800, 700)
         window_geometry = MainWindow.frameGeometry()
-        screen_center_point = QtWidgets.QDesktopWidget().availableGeometry().center()
+        screen_center_point = (QtWidgets.QDesktopWidget().availableGeometry()
+                               .center())
         window_geometry.moveCenter(screen_center_point)
         MainWindow.move(window_geometry.topLeft())
         main_icon = QtGui.QIcon()
@@ -144,7 +145,7 @@ class ConsumptionTracker():
         # water progress bar
         self.waterBar = QtWidgets.QProgressBar(self.centralwidget)
         self.waterBar.setGeometry(QtCore.QRect(20, 514, 250, 36))
-        if self.light_on == True:
+        if self.light_on is True:
             self.waterBar.setStyleSheet(CT_stylesheets.water_bar_light)
         else:
             self.waterBar.setStyleSheet(CT_stylesheets.water_bar_dark)
@@ -155,7 +156,7 @@ class ConsumptionTracker():
         # calories progress bar
         self.calBar = QtWidgets.QProgressBar(self.centralwidget)
         self.calBar.setGeometry(QtCore.QRect(20, 564, 250, 36))
-        if self.light_on == True:
+        if self.light_on is True:
             self.calBar.setStyleSheet(CT_stylesheets.cal_bar_light)
         else:
             self.calBar.setStyleSheet(CT_stylesheets.cal_bar_dark)
@@ -488,7 +489,7 @@ class ConsumptionTracker():
         self.file_menu = QtWidgets.QMenu(self.menubar)
         self.file_menu.setObjectName("file_menu")
         
-        if self.light_on == True:
+        if self.light_on is True:
             self.menubar.setStyleSheet(CT_stylesheets.menubar_light)
         else:
             self.menubar.setStyleSheet(CT_stylesheets.menubar_dark)
@@ -556,7 +557,7 @@ class ConsumptionTracker():
         self.toolBar.setObjectName("toolBar")
         MainWindow.addToolBar(QtCore.Qt.TopToolBarArea, self.toolBar)
         
-        if self.light_on == True:
+        if self.light_on is True:
             self.toolBar.setStyleSheet(CT_stylesheets.toolbar_light)
         else:
             self.toolBar.setStyleSheet(CT_stylesheets.toolbar_dark)
@@ -624,7 +625,7 @@ class ConsumptionTracker():
         self.get_current_time_btn.setStyleSheet("font: 9pt \"Segoe UI\";\n;""text-align: center")
         self.get_current_time_btn.clicked.connect(self.time_to_current_moment)
 
-        if self.reset_app_value == True:
+        if self.reset_app_value is True:
             if self.previous_time < self.current_time:
                 self.reset_app()
 
@@ -686,34 +687,10 @@ class ConsumptionTracker():
         CT_backend.set_calories_to_4000(self)
 
     def open_about(self):
-        if self.light_on == False:
-            app.setStyleSheet(CT_stylesheets.app_open_about1)
-            QtWidgets.QMessageBox.information(MainWindow,
-                'About CT', 
-                "Version: v1.0.0\nRelease date: 03/09/2019\nMade in: Python 3.6.0/PyQt5 5.13.0\nTested on: Windows 10 (x64)",
-                QtWidgets.QMessageBox.Ok)
-            app.setStyleSheet(CT_stylesheets.app_open_about2)
-        else:
-            QtWidgets.QMessageBox.information(MainWindow,
-                'About CT', 
-                "Version: v1.0.0\nRelease date: 03/09/2019\nMade in: Python 3.6.0/PyQt5 5.13.0\nTested on: Windows 10 (x64)",
-                QtWidgets.QMessageBox.Ok)
-
+        CT_backend.open_about(self)
+        
     def open_project_page(self):
-        if self.light_on == False:
-            app.setStyleSheet(CT_stylesheets.app_open_project1)          
-            choice = QtWidgets.QMessageBox.question(MainWindow, 
-                'View project page', 'This will open a new browser tab.', 
-                QtWidgets.QMessageBox.Ok | QtWidgets.QMessageBox.Cancel)
-            if choice == QtWidgets.QMessageBox.Ok:
-                webbrowser.open_new_tab('https://github.com/porgabi/consumption-tracker')
-            app.setStyleSheet(CT_stylesheets.app_open_project2)
-        else:
-            choice = QtWidgets.QMessageBox.question(MainWindow, 
-                'View project page', 'This will open a new browser tab.', 
-                QtWidgets.QMessageBox.Ok | QtWidgets.QMessageBox.Cancel)
-            if choice == QtWidgets.QMessageBox.Ok:
-                webbrowser.open_new_tab('https://github.com/porgabi/consumption-tracker')
+        CT_backend.open_project_page(self)
 
     # TOOLBAR functions
     def reset_app(self):
@@ -724,99 +701,7 @@ class ConsumptionTracker():
         CT_backend.take_screenshot(self)
 
     def switch_appearance(self):
-        if self.light_on == True:
-            self.light_on = False
-            light_icon = QtGui.QIcon()
-            light_icon.addPixmap(QtGui.QPixmap("CT_icons/lighten.png"))
-            self.appearance_Btn.setIcon(light_icon)
-            self.appearance_Btn.setToolTip('Lighten')
-            self.dark_palette = QtGui.QPalette()
-            self.dark_palette.setColor(QtGui.QPalette.Window, QtGui.QColor(90, 90, 90))
-            app.setPalette(self.dark_palette)
-            
-            self.subWaterButton.setStyleSheet(CT_stylesheets.background_dark)
-            self.waterButton1.setStyleSheet(CT_stylesheets.background_dark)
-            self.waterButton2.setStyleSheet(CT_stylesheets.background_dark)
-            self.waterButton3.setStyleSheet(CT_stylesheets.background_dark)
-            self.subCalBtn.setStyleSheet(CT_stylesheets.background_dark)
-            self.calButton1.setStyleSheet(CT_stylesheets.background_dark)
-            self.calButton2.setStyleSheet(CT_stylesheets.background_dark)
-            self.calButton3.setStyleSheet(CT_stylesheets.background_dark)
-            self.waterBar.setStyleSheet(CT_stylesheets.water_bar_dark)
-            self.calBar.setStyleSheet(CT_stylesheets.cal_bar_dark)
-
-            # tooltip_dark
-            app.setStyleSheet(CT_stylesheets.tooltip_dark)
-
-            self.menubar.setStyleSheet(CT_stylesheets.menubar_dark)
-
-            # TODO include water menu style in menubar stylesheet
-            self.set_water_menu.setStyleSheet(CT_stylesheets.secondary_menu_dark)
-            self.set_calories_menu.setStyleSheet(CT_stylesheets.secondary_menu_dark)
-
-            self.toolBar.setStyleSheet(CT_stylesheets.toolbar_dark)
-            self.mealTimeBtn.setStyleSheet(CT_stylesheets.background_dark)
-            self.get_current_time_btn.setStyleSheet('background: rgb(90, 90, 90); color: white')
-
-            self.hourEdit.setStyleSheet(CT_stylesheets.time_edit_dark)
-            self.minEdit.setStyleSheet(CT_stylesheets.time_edit_dark)
-            run_light_icon = QtGui.QIcon()
-            run_light_icon.addPixmap(QtGui.QPixmap("CT_icons/runLight.png"))
-            self.subCalBtn.setIcon(run_light_icon)
-            
-            if self.human_image_is_malebodylight == True:
-                self.human_image.setPixmap(QtGui.QPixmap("CT_icons/malebodydark.png"))
-                self.human_image_is_malebodydark = True
-                self.current_body = 'male_dark'
-            else:
-                self.human_image.setPixmap(QtGui.QPixmap("CT_icons/femalebodydark.png"))
-                self.current_body = 'female_dark'
-            self.save_data()
-        else:
-            self.light_on = True
-            dark_icon = QtGui.QIcon()
-            dark_icon.addPixmap(QtGui.QPixmap("CT_icons/darken.png"))
-            self.appearance_Btn.setIcon(dark_icon)
-            self.appearance_Btn.setToolTip('Darken')
-            self.light_palette = QtGui.QPalette()
-            self.light_palette.setColor(QtGui.QPalette.Window, QtGui.QColor(255, 255, 255))
-            app.setPalette(self.light_palette)
-
-            self.mealTimeBtn.setStyleSheet(CT_stylesheets.background_light)
-            self.get_current_time_btn.setStyleSheet('background: rgb(255, 255, 255); color: black')
-            self.subWaterButton.setStyleSheet(CT_stylesheets.background_light)
-            self.waterButton1.setStyleSheet(CT_stylesheets.background_light)
-            self.waterButton2.setStyleSheet(CT_stylesheets.background_light)
-            self.waterButton3.setStyleSheet(CT_stylesheets.background_light)
-            self.subCalBtn.setStyleSheet(CT_stylesheets.background_light)
-            self.calButton1.setStyleSheet(CT_stylesheets.background_light)
-            self.calButton2.setStyleSheet(CT_stylesheets.background_light)
-            self.calButton3.setStyleSheet(CT_stylesheets.background_light)
-            self.waterBar.setStyleSheet(CT_stylesheets.water_bar_light)
-            self.calBar.setStyleSheet(CT_stylesheets.cal_bar_light)
-            app.setStyleSheet(CT_stylesheets.tooltip_light)
-            self.menubar.setStyleSheet(CT_stylesheets.menubar_light)
-            self.set_water_menu.setStyleSheet(CT_stylesheets.secondary_menu_light)
-            self.set_calories_menu.setStyleSheet(CT_stylesheets.secondary_menu_light)
-            self.toolBar.setStyleSheet(CT_stylesheets.toolbar_light)
-
-            self.hourEdit.setStyleSheet(CT_stylesheets.time_edit_light)
-            self.minEdit.setStyleSheet(CT_stylesheets.time_edit_light)
-            run_dark_icon = QtGui.QIcon()
-            run_dark_icon.addPixmap(QtGui.QPixmap("CT_icons/runDark.png"))
-            self.subCalBtn.setIcon(run_dark_icon)
-            
-            if self.human_image_is_malebodydark == True:
-                self.human_image.setPixmap(QtGui.QPixmap("CT_icons/malebodylight.png"))
-                self.human_image_is_malebodydark = False
-                self.human_image_is_malebodylight = True
-                self.current_body = 'male_light'
-            else:
-                self.human_image.setPixmap(QtGui.QPixmap("CT_icons/femalebodylight.png"))
-                self.human_image_is_malebodydark = False
-                self.human_image_is_malebodylight = False
-                self.current_body = 'female_light'
-            self.save_data()
+        CT_backend.switch_appearance(self)
 
     def minimize(self):
         MainWindow.hide()
@@ -877,7 +762,6 @@ class ConsumptionTracker():
         self.eggsText.setText(_translate('MainWindow', '500 cal'))
         self.meatText.setText(_translate('MainWindow', '1000 cal'))
         self.clockText.setText(_translate('MainWindow', "Set meal times"))
-        
         self.get_current_time_btn.setText(_translate('MainWindow', "Set current time"))
 
         # CENTRALWIDGET TEXT labels
@@ -963,7 +847,9 @@ if __name__ == "__main__":
     ui.setupUi(MainWindow)
     
     # TODO should just call switch_appearance() regardless
-    if ui.light_on == True:
+    # ...and for that, body tracking needs rework
+
+    if ui.light_on is True:
         light_palette = QtGui.QPalette()
         light_palette.setColor(QtGui.QPalette.Window, QtGui.QColor(255, 255, 255))
         app.setPalette(light_palette)
