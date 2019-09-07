@@ -3,6 +3,7 @@ from tkinter import filedialog
 import sys, pyautogui, os, datetime, json, webbrowser
 # import fix_qt_import_error    # uncomment when making an exe with pyinstaller
 from PyQt5 import QtCore, QtGui, QtWidgets
+import CT_backend, CT_stylesheets
 
 
 class ConsumptionTracker():
@@ -33,6 +34,7 @@ class ConsumptionTracker():
         self.max_water = 3000
         self.max_calories = 2500
     
+        # loading saved values
         if 'data.json' in os.listdir():
             with open('data.json') as json_file:
                 data = json.load(json_file)
@@ -106,7 +108,6 @@ class ConsumptionTracker():
         self.human_image.setGeometry(QtCore.QRect(55, 10, 167, 500))
         self.human_image.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.human_image.setFrameShadow(QtWidgets.QFrame.Plain)
-        self.human_image.setText("")
         self.human_image.setStyleSheet("border: 0px solid transparent;\n")
         
         if self.current_body == "male_light":
@@ -131,15 +132,7 @@ class ConsumptionTracker():
         # progress bar behind body silhouette
         self.human_bar = QtWidgets.QProgressBar(self.centralwidget)
         self.human_bar.setGeometry(QtCore.QRect(55, 10, 167, 500))
-        self.human_bar.setStyleSheet("QProgressBar{\n"
-        "border: 1px solid transparent;\n"
-        "text-align: center;\n"
-        "color:rgba(0,0,0,100);\n"
-        "border-radius: 5px;\n"
-        "background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 rgba(182, 182, 182, 100), stop:1 rgba(209, 209, 209, 100));}\n"
-        "\n"
-        "QProgressBar::chunk{\n"
-        "background-color: qlineargradient(spread:pad, x1:0.494, y1:1, x2:0.494, y2:0, stop: 0 rgba(21, 158, 71, 255), stop: 1 rgba(32, 201, 90, 255));}")
+        self.human_bar.setStyleSheet(CT_stylesheets.human_bar)
         self.human_bar.setMaximum(self.max_human_value)
         self.human_bar.setProperty("value", self.current_water + self.current_calories)
         self.human_bar.setTextVisible(False)
@@ -152,38 +145,9 @@ class ConsumptionTracker():
         self.waterBar = QtWidgets.QProgressBar(self.centralwidget)
         self.waterBar.setGeometry(QtCore.QRect(20, 514, 250, 36))
         if self.light_on == True:
-            self.waterBar.setStyleSheet("QProgressBar:horizontal {\n"
-            "border: 2px solid black;\n"
-            "border-radius: 3px;\n"
-            "background: white;\n"
-            "padding: 0px;\n"
-            "font: 19pt \"Segoe UI\";\n"
-            "text-align: center;\n"
-            "margin-right: 0ex;\n"
-            "}\n"
-            "QProgressBar::chunk:horizontal {\n"
-            "background: qlineargradient(x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 rgba(135, 224, 255, 255), stop: 1 rgba(64, 164, 223, 255));\n"
-            "}\n"
-            "QProgressBar {"
-            "color: black;"
-            "font: 15px"
-            "}")
+            self.waterBar.setStyleSheet(CT_stylesheets.water_bar_light)
         else:
-            self.waterBar.setStyleSheet("QProgressBar:horizontal {\n"
-            "border: 2px solid black;\n"
-            "border-radius: 3px;\n"
-            "background: rgb(90, 90, 90);\n"
-            "font: 75 12pt \"Segoe UI\";\n"
-            "text-align: center;\n"
-            "margin-right: 0ex;\n"
-            "}\n"
-            "QProgressBar::chunk:horizontal {\n"
-            "background: qlineargradient(x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 rgba(135, 224, 255, 255), stop: 1 rgba(64, 164, 223, 255));\n"
-            "}\n"
-            "QProgressBar {"
-            "color: white;"
-            "font: 15px"
-            "}")
+            self.waterBar.setStyleSheet(CT_stylesheets.water_bar_dark)
         self.waterBar.setMaximum(self.max_water)
         self.waterBar.setProperty('value', self.current_water)
         self.waterBar.setObjectName("waterBar")        
@@ -192,88 +156,18 @@ class ConsumptionTracker():
         self.calBar = QtWidgets.QProgressBar(self.centralwidget)
         self.calBar.setGeometry(QtCore.QRect(20, 564, 250, 36))
         if self.light_on == True:
-            self.calBar.setStyleSheet("QProgressBar:horizontal {\n"
-            "border: 2px solid black;\n"
-            "border-radius: 3px;\n"
-            "background: white;\n"
-            "padding: 0px;\n"
-            "text-align: center;\n"
-            "margin-right: 0ex;\n"
-            "}\n"
-            "QProgressBar::chunk:horizontal {\n"
-            "background: qlineargradient(x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 yellow, stop: 1 rgba(255, 170, 170, 255));\n"
-            "\n"
-            "}\n"
-            "QProgressBar {"
-            "color: black;"
-            "font: 15px"
-            "}")
+            self.calBar.setStyleSheet(CT_stylesheets.cal_bar_light)
         else:
-            self.calBar.setStyleSheet("QProgressBar:horizontal {\n"
-            "border: 2px solid black;\n"
-            "border-radius: 3px;\n"
-            "background: rgb(90, 90, 90);\n"
-            "padding: 0px;\n"
-            "text-align: center;\n"
-            "margin-right: 0ex;\n"
-            "}\n"
-            "QProgressBar::chunk:horizontal {\n"
-            "background: qlineargradient(x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 yellow, stop: 1 rgba(255, 170, 170, 255));\n"
-            "\n"
-            "}\n"
-            "QProgressBar {"
-            "color: white;"
-            "font: 15px"
-            "}")
+            self.calBar.setStyleSheet(CT_stylesheets.cal_bar_dark)
         self.calBar.setMaximum(self.max_calories)
         self.calBar.setProperty("value", self.current_calories)        
         self.calBar.setOrientation(QtCore.Qt.Horizontal)
         self.calBar.setObjectName("calBar")
         
-        # current calories LCD display
-        self.calNumber = QtWidgets.QLCDNumber(self.centralwidget)
-        self.calNumber.setGeometry(QtCore.QRect(270, 560, 100, 42))
-        self.calNumber.setStyleSheet("color: rgba(255, 130, 0, 255);")
-        self.calNumber.setFrameShape(QtWidgets.QFrame.NoFrame)
-        self.calNumber.setDigitCount(4)
-        self.calNumber.setSegmentStyle(QtWidgets.QLCDNumber.Flat)
-        self.calNumber.setProperty("intValue", self.current_calories)
-        self.calNumber.setObjectName("calNumber")
-
-        # calNumberLCD per label
-        self.calories_LCD_per_sign = QtWidgets.QLabel(self.centralwidget)
-        self.calories_LCD_per_sign.setGeometry(QtCore.QRect(360, 557, 20, 42))
-        self.calories_LCD_per_sign.setStyleSheet("font: 30pt \"Segoe UI\";""color: rgba(255, 130, 0, 255)")
-        self.calories_LCD_per_sign.setScaledContents(False)
-        self.calories_LCD_per_sign.setAlignment(QtCore.Qt.AlignVCenter)
-        self.calories_LCD_per_sign.setWordWrap(True)
-        self.calories_LCD_per_sign.setIndent(-1)
-        self.calories_LCD_per_sign.setObjectName("calories_LCD_per_sign")
-
-        # max calories LCD display
-        self.max_calories_number = QtWidgets.QLCDNumber(self.centralwidget)
-        self.max_calories_number.setGeometry(QtCore.QRect(364, 560, 100, 42))
-        self.max_calories_number.setStyleSheet("color: rgba(255, 130, 0, 255);")
-        self.max_calories_number.setFrameShape(QtWidgets.QFrame.NoFrame)
-        self.max_calories_number.setDigitCount(4)
-        self.max_calories_number.setSegmentStyle(QtWidgets.QLCDNumber.Flat)
-        self.max_calories_number.setProperty("intValue", self.max_calories)
-        self.max_calories_number.setObjectName("max_calories_number")
-
-        # calories unit label
-        self.calories_unit_label = QtWidgets.QLabel(self.centralwidget)
-        self.calories_unit_label.setGeometry(QtCore.QRect(460, 560, 30, 42))
-        self.calories_unit_label.setStyleSheet("font: 20pt \"Candara\";""color: rgba(255, 130, 0, 255)")
-        self.calories_unit_label.setScaledContents(False)
-        self.calories_unit_label.setAlignment(QtCore.Qt.AlignBottom)
-        self.calories_unit_label.setWordWrap(True)
-        self.calories_unit_label.setIndent(-1)
-        self.calories_unit_label.setObjectName("calories_unit_label")
-
         # current water LCD display
         self.waterNumber = QtWidgets.QLCDNumber(self.centralwidget)
         self.waterNumber.setGeometry(QtCore.QRect(290, 510, 100, 42))
-        self.waterNumber.setStyleSheet("color: rgb(64, 164, 223);")
+        self.waterNumber.setStyleSheet(CT_stylesheets.water_color)
         self.waterNumber.setFrameShape(QtWidgets.QFrame.NoFrame)
         self.waterNumber.setDigitCount(2)
         self.waterNumber.setSegmentStyle(QtWidgets.QLCDNumber.Flat)
@@ -286,14 +180,12 @@ class ConsumptionTracker():
         self.water_LCD_per_sign.setStyleSheet("font: 30pt \"Segoe UI\";""color: rgb(64, 164, 223)")
         self.water_LCD_per_sign.setScaledContents(False)
         self.water_LCD_per_sign.setAlignment(QtCore.Qt.AlignVCenter)
-        self.water_LCD_per_sign.setWordWrap(True)
-        self.water_LCD_per_sign.setIndent(-1)
         self.water_LCD_per_sign.setObjectName("water_LCD_per_sign")
 
         # max water LCD display
         self.max_water_number = QtWidgets.QLCDNumber(self.centralwidget)
         self.max_water_number.setGeometry(QtCore.QRect(383, 510, 100, 42))
-        self.max_water_number.setStyleSheet("color: rgb(64, 164, 223);")
+        self.max_water_number.setStyleSheet(CT_stylesheets.water_color)
         self.max_water_number.setFrameShape(QtWidgets.QFrame.NoFrame)
         self.max_water_number.setDigitCount(2)
         self.max_water_number.setSegmentStyle(QtWidgets.QLCDNumber.Flat)
@@ -306,18 +198,50 @@ class ConsumptionTracker():
         self.water_unit_label.setStyleSheet("font: 20pt \"Candara\";""color: rgb(64, 164, 223)")
         self.water_unit_label.setScaledContents(False)
         self.water_unit_label.setAlignment(QtCore.Qt.AlignBottom)
-        self.water_unit_label.setWordWrap(True)
-        self.water_unit_label.setIndent(-1)
         self.water_unit_label.setObjectName("water_unit_label")
+        
+        # current calories LCD display
+        self.calNumber = QtWidgets.QLCDNumber(self.centralwidget)
+        self.calNumber.setGeometry(QtCore.QRect(270, 560, 100, 42))
+        self.calNumber.setStyleSheet(CT_stylesheets.cal_color)
+        self.calNumber.setFrameShape(QtWidgets.QFrame.NoFrame)
+        self.calNumber.setDigitCount(4)
+        self.calNumber.setSegmentStyle(QtWidgets.QLCDNumber.Flat)
+        self.calNumber.setProperty("intValue", self.current_calories)
+        self.calNumber.setObjectName("calNumber")
+
+        # calNumberLCD per label
+        self.calories_LCD_per_sign = QtWidgets.QLabel(self.centralwidget)
+        self.calories_LCD_per_sign.setGeometry(QtCore.QRect(360, 557, 20, 42))
+        self.calories_LCD_per_sign.setStyleSheet("font: 30pt \"Segoe UI\";""color: rgba(255, 130, 0, 255)")
+        self.calories_LCD_per_sign.setScaledContents(False)
+        self.calories_LCD_per_sign.setAlignment(QtCore.Qt.AlignVCenter)
+        self.calories_LCD_per_sign.setObjectName("calories_LCD_per_sign")
+
+        # max calories LCD display
+        self.max_calories_number = QtWidgets.QLCDNumber(self.centralwidget)
+        self.max_calories_number.setGeometry(QtCore.QRect(364, 560, 100, 42))
+        self.max_calories_number.setStyleSheet(CT_stylesheets.cal_color)
+        self.max_calories_number.setFrameShape(QtWidgets.QFrame.NoFrame)
+        self.max_calories_number.setDigitCount(4)
+        self.max_calories_number.setSegmentStyle(QtWidgets.QLCDNumber.Flat)
+        self.max_calories_number.setProperty("intValue", self.max_calories)
+        self.max_calories_number.setObjectName("max_calories_number")
+
+        # calories unit label
+        self.calories_unit_label = QtWidgets.QLabel(self.centralwidget)
+        self.calories_unit_label.setGeometry(QtCore.QRect(460, 560, 30, 42))
+        self.calories_unit_label.setStyleSheet("font: 20pt \"Candara\";""color: rgba(255, 130, 0, 255)")
+        self.calories_unit_label.setScaledContents(False)
+        self.calories_unit_label.setAlignment(QtCore.Qt.AlignBottom)
+        self.calories_unit_label.setObjectName("calories_unit_label")
 
         # manage water label
         self.addWaterLabel = QtWidgets.QLabel(self.centralwidget)
         self.addWaterLabel.setGeometry(QtCore.QRect(500, 10, 100, 30))
-        self.addWaterLabel.setStyleSheet("font: 12pt \"Segoe UI\";")
+        self.addWaterLabel.setStyleSheet(CT_stylesheets.text_label_font2)
         self.addWaterLabel.setScaledContents(False)
         self.addWaterLabel.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignCenter)
-        self.addWaterLabel.setWordWrap(True)
-        self.addWaterLabel.setIndent(-1)
         self.addWaterLabel.setObjectName("addWaterLabel")
 
         # largeBottle button
@@ -367,51 +291,41 @@ class ConsumptionTracker():
         # largeBottle label
         self.largeBottleText = QtWidgets.QLabel(self.centralwidget)
         self.largeBottleText.setGeometry(QtCore.QRect(500, 150, 100, 20))
-        self.largeBottleText.setStyleSheet("font: 11pt \"Segoe UI\";")
+        self.largeBottleText.setStyleSheet(CT_stylesheets.text_label_font1)
         self.largeBottleText.setScaledContents(False)
         self.largeBottleText.setAlignment(QtCore.Qt.AlignCenter)
-        self.largeBottleText.setWordWrap(True)
-        self.largeBottleText.setIndent(-1)
         self.largeBottleText.setObjectName("largeBottleText")
 
         # smallBottle label
         self.smallBottleText = QtWidgets.QLabel(self.centralwidget)
         self.smallBottleText.setGeometry(QtCore.QRect(500, 300, 100, 20))
-        self.smallBottleText.setStyleSheet("font: 11pt \"Segoe UI\";")
+        self.smallBottleText.setStyleSheet(CT_stylesheets.text_label_font1)
         self.smallBottleText.setScaledContents(False)
         self.smallBottleText.setAlignment(QtCore.Qt.AlignCenter)
-        self.smallBottleText.setWordWrap(True)
-        self.smallBottleText.setIndent(-1)
         self.smallBottleText.setObjectName("smallBottleText")
 
         # waterCup label
         self.waterCupText = QtWidgets.QLabel(self.centralwidget)
         self.waterCupText.setGeometry(QtCore.QRect(500, 450, 100, 20))
-        self.waterCupText.setStyleSheet("font: 11pt \"Segoe UI\";")
+        self.waterCupText.setStyleSheet(CT_stylesheets.text_label_font1)
         self.waterCupText.setScaledContents(False)
         self.waterCupText.setAlignment(QtCore.Qt.AlignCenter)
-        self.waterCupText.setWordWrap(True)
-        self.waterCupText.setIndent(-1)
         self.waterCupText.setObjectName("waterCupText")
 
         # subtractWater label
         self.subWaterText = QtWidgets.QLabel(self.centralwidget)
         self.subWaterText.setGeometry(QtCore.QRect(517.5, 565, 65, 20))
-        self.subWaterText.setStyleSheet("font: 11pt \"Segoe UI\";")
+        self.subWaterText.setStyleSheet(CT_stylesheets.text_label_font1)
         self.subWaterText.setScaledContents(False)
         self.subWaterText.setAlignment(QtCore.Qt.AlignCenter)
-        self.subWaterText.setWordWrap(True)
-        self.subWaterText.setIndent(-1)
         self.subWaterText.setObjectName("subWaterText")
 
         # manage calories label
         self.addCaloriesLabel = QtWidgets.QLabel(self.centralwidget)
         self.addCaloriesLabel.setGeometry(QtCore.QRect(640, 10, 120, 30))
-        self.addCaloriesLabel.setStyleSheet("font: 12pt \"Segoe UI\";")
+        self.addCaloriesLabel.setStyleSheet(CT_stylesheets.text_label_font2)
         self.addCaloriesLabel.setScaledContents(False)
         self.addCaloriesLabel.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignCenter)
-        self.addCaloriesLabel.setWordWrap(True)
-        self.addCaloriesLabel.setIndent(-1)
         self.addCaloriesLabel.setObjectName("addCaloriesLabel")
 
         # meatButton
@@ -461,61 +375,49 @@ class ConsumptionTracker():
         # meat label
         self.meatText = QtWidgets.QLabel(self.centralwidget)
         self.meatText.setGeometry(QtCore.QRect(650, 150, 100, 20))
-        self.meatText.setStyleSheet("font: 11pt \"Segoe UI\";")
+        self.meatText.setStyleSheet(CT_stylesheets.text_label_font1)
         self.meatText.setScaledContents(False)
         self.meatText.setAlignment(QtCore.Qt.AlignCenter)
-        self.meatText.setWordWrap(True)
-        self.meatText.setIndent(-1)
         self.meatText.setObjectName("meatText")
 
         # eggs label
         self.eggsText = QtWidgets.QLabel(self.centralwidget)
         self.eggsText.setGeometry(QtCore.QRect(650, 300, 100, 20))
-        self.eggsText.setStyleSheet("font: 11pt \"Segoe UI\";")
+        self.eggsText.setStyleSheet(CT_stylesheets.text_label_font1)
         self.eggsText.setScaledContents(False)
         self.eggsText.setAlignment(QtCore.Qt.AlignCenter)
-        self.eggsText.setWordWrap(True)
-        self.eggsText.setIndent(-1)
         self.eggsText.setObjectName("eggsText")
 
         # sandwich label
         self.sandwichText = QtWidgets.QLabel(self.centralwidget)
         self.sandwichText.setGeometry(QtCore.QRect(650, 450, 100, 20))
-        self.sandwichText.setStyleSheet("font: 11pt \"Segoe UI\";")
+        self.sandwichText.setStyleSheet(CT_stylesheets.text_label_font1)
         self.sandwichText.setScaledContents(False)
         self.sandwichText.setAlignment(QtCore.Qt.AlignCenter)
-        self.sandwichText.setWordWrap(True)
-        self.sandwichText.setIndent(-1)
         self.sandwichText.setObjectName("sandwichText")
 
         # subCal label
         self.subCalText = QtWidgets.QLabel(self.centralwidget)
         self.subCalText.setGeometry(QtCore.QRect(667.5, 565, 65, 20))   # 50 pixels from button
-        self.subCalText.setStyleSheet("font: 11pt \"Segoe UI\";")
+        self.subCalText.setStyleSheet(CT_stylesheets.text_label_font1)
         self.subCalText.setScaledContents(False)
         self.subCalText.setAlignment(QtCore.Qt.AlignCenter)
-        self.subCalText.setWordWrap(True)
-        self.subCalText.setIndent(-1)
         self.subCalText.setObjectName("subCalText")
 
         # meal time logger label
         self.clockText = QtWidgets.QLabel(self.centralwidget)
         self.clockText.setGeometry(QtCore.QRect(300, 10, 120, 30))
-        self.clockText.setStyleSheet("font: 12pt \"Segoe UI\";")
+        self.clockText.setStyleSheet(CT_stylesheets.text_label_font2)
         self.clockText.setScaledContents(False)
         self.clockText.setAlignment(QtCore.Qt.AlignCenter)
-        self.clockText.setWordWrap(True)
-        self.clockText.setIndent(-1)
         self.clockText.setObjectName("clockText")
 
         # meal times list label
         self.mealText = QtWidgets.QLabel(self.centralwidget)
         self.mealText.setGeometry(QtCore.QRect(300, 160, 120, 220))
-        self.mealText.setStyleSheet("font: 11pt \"Segoe UI\";")
+        self.mealText.setStyleSheet(CT_stylesheets.text_label_font1)
         self.mealText.setScaledContents(False)
         self.mealText.setAlignment(QtCore.Qt.AlignHCenter|QtCore.Qt.AlignTop)
-        self.mealText.setWordWrap(True)
-        self.mealText.setIndent(-1)
         self.mealText.setObjectName("mealText")
         
         # MENUBAR
@@ -531,6 +433,7 @@ class ConsumptionTracker():
         self.reset_values_action.triggered.connect(self.reset_app_toggler)
 
         # selectable max water values
+        # for loop?
         self.set_water_10dl_action = QtWidgets.QAction(MainWindow)
         self.set_water_10dl_action.setStatusTip('10 dl')
         self.set_water_10dl_action.triggered.connect(self.set_water_to_10dl)
@@ -586,61 +489,15 @@ class ConsumptionTracker():
         self.file_menu.setObjectName("file_menu")
         
         if self.light_on == True:
-            self.menubar.setStyleSheet("""
-            QMenuBar {
-                background-color: rgb(255, 255, 255);
-                color: black;
-            }
-            QMenuBar::item {
-                background-color: rgb(255, 255, 255);
-                color: black;
-            }
-            QMenuBar::item::selected {
-                background-color: rgb(220, 220, 220);
-            }
-            QMenu {
-                background-color: rgb(255, 255, 255);
-                color: black;
-                border: 1px solid black;           
-            }
-            QMenu::item::selected {
-                background-color: rgb(220, 220, 220);
-            }
-        """)
+            self.menubar.setStyleSheet(CT_stylesheets.menubar_light)
         else:
-            self.menubar.setStyleSheet("""
-            QMenuBar {
-                background-color: rgb(90, 90, 90);
-                color: rgb(255, 255, 255);
-            }
-            QMenuBar::item {
-                background-color: rgb(90, 90, 90);
-                color: rgb(255,255,255);
-            }
-            QMenuBar::item::selected {
-                background-color: rgb(120, 120, 120);
-            }
-            QMenu {
-                background-color: rgb(90, 90, 90);
-                color: rgb(255,255,255);
-                border: 1px solid white;           
-            }
-            QMenu::item::selected {
-                background-color: rgb(120, 120, 120);
-            }
-        """)
+            self.menubar.setStyleSheet(CT_stylesheets.menubar_dark)
 
-        # creating max values menu
+        # creating max values/water/calories/help menus
         self.set_max_values_menu = QtWidgets.QMenu(self.menubar)
         self.set_max_values_menu.setObjectName("set_max_values_menu")
-
-        # creating max water menu
         self.set_water_menu = QtWidgets.QMenu(self.set_max_values_menu)
-
-        # creating max calories menu
         self.set_calories_menu = QtWidgets.QMenu(self.set_max_values_menu)
-
-        # creating help menu
         self.help_menu = QtWidgets.QMenu(self.menubar)
         self.help_menu.setObjectName('help_menu')
 
@@ -700,15 +557,9 @@ class ConsumptionTracker():
         MainWindow.addToolBar(QtCore.Qt.TopToolBarArea, self.toolBar)
         
         if self.light_on == True:
-            self.toolBar.setStyleSheet("""
-            QToolBar {
-                background-color: white;
-            }
-            
-            QToolButton {
-                background-color: white;
-            }
-            """)
+            self.toolBar.setStyleSheet(CT_stylesheets.toolbar_light)
+        else:
+            self.toolBar.setStyleSheet(CT_stylesheets.toolbar_dark)
 
         # swap female/male image button
         body_swapper_btn = QtWidgets.QAction(QtGui.QIcon("CT_icons/swapBody.png"),
@@ -719,13 +570,13 @@ class ConsumptionTracker():
         # reset app button
         resetBtn = QtWidgets.QAction(QtGui.QIcon("CT_icons/reset.png"),
                                      "Reset app", MainWindow)
-        resetBtn.triggered.connect(self.resetApp)
+        resetBtn.triggered.connect(self.reset_app)
         self.toolBar.addAction(resetBtn)
 
         # save screenshot button
         ssBtn = QtWidgets.QAction(QtGui.QIcon("CT_icons/screenshooter.png"),
                                   "Save screenshot", MainWindow)
-        ssBtn.triggered.connect(self.screenshot)
+        ssBtn.triggered.connect(self.take_screenshot)
         self.toolBar.addAction(ssBtn)
 
         # switch appearance button
@@ -743,7 +594,7 @@ class ConsumptionTracker():
         # hour logger
         self.hourEdit = QtWidgets.QTimeEdit(self.centralwidget)
         self.hourEdit.setGeometry(QtCore.QRect(300, 50, 60, 50))
-        self.hourEdit.setStyleSheet("font: 20pt \"Segoe UI\"""; color: black")
+        self.hourEdit.setStyleSheet("font: 20pt \"Segoe UI\"""; color: black")  #
         self.hourEdit.setAlignment(QtCore.Qt.AlignCenter)
         self.hourEdit.setCurrentSection(QtWidgets.QDateTimeEdit.HourSection)        
         self.hourEdit.setObjectName("hourEdit")
@@ -758,7 +609,7 @@ class ConsumptionTracker():
 
         # meal time logging button
         self.mealTimeBtn = QtWidgets.QPushButton(self.centralwidget)
-        self.mealTimeBtn.setGeometry(QtCore.QRect(300, 100, 120, 25))   # y: 50
+        self.mealTimeBtn.setGeometry(QtCore.QRect(300, 100, 120, 25))
         mealTimeIcon = QtGui.QIcon()
         mealTimeIcon.addPixmap(QtGui.QPixmap("CT_icons/clock.png"))
         self.mealTimeBtn.setIcon(mealTimeIcon)
@@ -775,7 +626,7 @@ class ConsumptionTracker():
 
         if self.reset_app_value == True:
             if self.previous_time < self.current_time:
-                self.resetApp()
+                self.reset_app()
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
@@ -783,275 +634,65 @@ class ConsumptionTracker():
 
     # data saver function
     def save_data(self):
-        hourRaw = str(self.hourEdit.time())
-        minRaw = str(self.minEdit.time())
-        if len(hourRaw) == 24:
-            hourSliced = hourRaw[19]
-        else:
-            hourSliced = hourRaw[19] + hourRaw[20]
-        if len(hourSliced) == 1:
-            hour = hourSliced.replace(hourSliced, "0" + hourSliced)
-        else:
-            hour = hourSliced
-        if len(minRaw) == 24:
-            minSliced = minRaw[22]
-        else:
-            minSliced = minRaw[22] + minRaw[23]
-        if len(minSliced) == 1:
-            minutes = minSliced.replace(minSliced, "0" + minSliced)
-        else:
-            minutes = minSliced
-
-        self.last_day = datetime.datetime.now().day
-        self.last_month = datetime.datetime.now().month
-        self.last_year = datetime.datetime.now().year
-        
-        data = {}
-        data['saved_variables'] = []
-        data['saved_variables'].append({
-            'current_calories':    self.current_calories,
-            'current_water':       self.current_water,
-            'meal_logger_presses': self.meal_logger_presses,
-            'light_on':        str(self.light_on),
-            'ss_directory':        self.ss_directory,
-            'first_meal':          self.first_meal,
-            'second_meal':         self.second_meal,
-            'third_meal':          self.third_meal,
-            'fourth_meal':         self.fourth_meal,
-            'fifth_meal':          self.fifth_meal,
-            'sixth_meal':          self.sixth_meal,
-            'saved_hour':      int(hour),
-            'saved_minute':    int(minutes),
-            'current_body':        self.current_body,
-            'reset_app_value': str(self.reset_app_value),
-            'last_time': (self.last_day, self.last_month, self.last_year),
-            'max_water':           self.max_water,
-            'max_calories':        self.max_calories
-        })
-        with open('data.json', 'w') as outfile:
-            json.dump(data, outfile, indent=4)
+        CT_backend.save_data(self)
 
     # MENUBAR FUNCTIONS
     def select_directory(self):
-        root = tk.Tk()
-        root.withdraw()
-        self.ss_directory_new = filedialog.askdirectory()
-        if self.ss_directory_new == "":
-            pass
-        else:
-            self.ss_directory = self.ss_directory_new
-            self.save_data()
+        CT_backend.select_directory(self)
 
     def reset_app_toggler(self, state):
-        if state:
-            self.reset_app_value = True
-        else:
-            self.reset_app_value = False
-        self.save_data()
+        CT_backend.reset_app_toggler(self, state)
 
     def set_water_to_10dl(self):
-        self.max_water = 1000
-        self.max_human_value = self.max_water + self.max_calories
-        if self.max_water <= self.current_water:
-            self.current_water = self.max_water
-        self.waterBar.setMaximum(self.max_water)
-        self.waterBar.setProperty('value', self.current_water)
-        self.human_bar.setMaximum(self.max_human_value)
-        self.human_bar.setProperty('value', self.current_water + self.current_calories)
-        self.waterNumber.setProperty('intValue', (self.current_water / 100))
-        self.max_water_number.setProperty("intValue", self.max_water / 100)
-        self.save_data()
+        CT_backend.set_water_to_10dl(self)
 
     def set_water_to_15dl(self):
-        self.max_water = 1500
-        self.max_human_value = self.max_water + self.max_calories
-        if self.max_water <= self.current_water:
-            self.current_water = self.max_water
-        self.waterBar.setMaximum(self.max_water)
-        self.waterBar.setProperty('value', self.current_water)
-        self.human_bar.setMaximum(self.max_human_value)
-        self.human_bar.setProperty('value', self.current_water + self.current_calories)
-        self.waterNumber.setProperty('intValue', (self.current_water / 100))
-        self.max_water_number.setProperty("intValue", self.max_water / 100)
-        self.save_data()
+        CT_backend.set_water_to_15dl(self)
 
     def set_water_to_20dl(self):
-        self.max_water = 2000
-        self.max_human_value = self.max_water + self.max_calories
-        if self.max_water <= self.current_water:
-            self.current_water = self.max_water
-        self.waterBar.setMaximum(self.max_water)
-        self.waterBar.setProperty('value', self.current_water)
-        self.human_bar.setMaximum(self.max_human_value)
-        self.human_bar.setProperty('value', self.current_water + self.current_calories)
-        self.waterNumber.setProperty('intValue', (self.current_water / 100))
-        self.max_water_number.setProperty("intValue", self.max_water / 100)
-        self.save_data()
+        CT_backend.set_water_to_20dl(self)
 
     def set_water_to_25dl(self):
-        self.max_water = 2500
-        self.max_human_value = self.max_water + self.max_calories
-        if self.max_water <= self.current_water:
-            self.current_water = self.max_water
-        self.waterBar.setMaximum(self.max_water)
-        self.waterBar.setProperty('value', self.current_water)
-        self.human_bar.setMaximum(self.max_human_value)
-        self.human_bar.setProperty('value', self.current_water + self.current_calories)
-        self.waterNumber.setProperty('intValue', (self.current_water / 100))
-        self.max_water_number.setProperty("intValue", self.max_water / 100)
-        self.save_data()
+        CT_backend.set_water_to_25dl(self)
 
     def set_water_to_30dl(self):
-        self.max_water = 3000
-        self.max_human_value = self.max_water + self.max_calories
-        if self.max_water <= self.current_water:
-            self.current_water = self.max_water
-        self.waterBar.setMaximum(self.max_water)
-        self.waterBar.setProperty('value', self.current_water)
-        self.human_bar.setMaximum(self.max_human_value)
-        self.human_bar.setProperty('value', self.current_water + self.current_calories)
-        self.waterNumber.setProperty('intValue', (self.current_water / 100))
-        self.max_water_number.setProperty("intValue", self.max_water / 100)
-        self.save_data()
+        CT_backend.set_water_to_30dl(self)
 
     def set_water_to_35dl(self):
-        self.max_water = 3500
-        self.max_human_value = self.max_water + self.max_calories
-        if self.max_water <= self.current_water:
-            self.current_water = self.max_water
-        self.waterBar.setMaximum(self.max_water)
-        self.waterBar.setProperty('value', self.current_water)
-        self.human_bar.setMaximum(self.max_human_value)
-        self.human_bar.setProperty('value', self.current_water + self.current_calories)
-        self.waterNumber.setProperty('intValue', (self.current_water / 100))
-        self.max_water_number.setProperty("intValue", self.max_water / 100)
-        self.save_data()
+        CT_backend.set_water_to_35dl(self)
 
     def set_water_to_40dl(self):
-        self.max_water = 4000
-        self.max_human_value = self.max_water + self.max_calories
-        if self.max_water <= self.current_water:
-            self.current_water = self.max_water
-        self.waterBar.setMaximum(self.max_water)
-        self.waterBar.setProperty('value', self.current_water)
-        self.human_bar.setMaximum(self.max_human_value)
-        self.human_bar.setProperty('value', self.current_water + self.current_calories)
-        self.waterNumber.setProperty('intValue', (self.current_water / 100))
-        self.max_water_number.setProperty("intValue", self.max_water / 100)
-        self.save_data()
+        CT_backend.set_water_to_40dl(self)
 
     def set_calories_to_1000(self):
-        self.max_calories = 1000
-        self.max_human_value = self.max_water + self.max_calories
-        if self.max_calories <= self.current_calories:
-            self.current_calories = self.max_calories
-        self.calBar.setMaximum(self.max_calories)
-        self.calBar.setProperty('value', self.current_calories)
-        self.human_bar.setMaximum(self.max_human_value)
-        self.human_bar.setProperty('value', self.current_water + self.current_calories)
-        self.calNumber.setProperty('intValue', self.current_calories)
-        self.max_calories_number.setProperty("intValue", self.max_calories)
-        self.save_data()
+        CT_backend.set_calories_to_1000(self)
 
     def set_calories_to_1500(self):
-        self.max_calories = 1500
-        self.max_human_value = self.max_water + self.max_calories
-        if self.max_calories <= self.current_calories:
-            self.current_calories = self.max_calories
-        self.calBar.setMaximum(self.max_calories)
-        self.calBar.setProperty('value', self.current_calories)
-        self.human_bar.setMaximum(self.max_human_value)
-        self.human_bar.setProperty('value', self.current_water + self.current_calories)
-        self.calNumber.setProperty('intValue', self.current_calories)
-        self.max_calories_number.setProperty("intValue", self.max_calories)
-        self.save_data()
+        CT_backend.set_calories_to_1500(self)
 
     def set_calories_to_2000(self):
-        self.max_calories = 2000
-        self.max_human_value = self.max_water + self.max_calories
-        if self.max_calories <= self.current_calories:
-            self.current_calories = self.max_calories
-        self.calBar.setMaximum(self.max_calories)
-        self.calBar.setProperty('value', self.current_calories)
-        self.human_bar.setMaximum(self.max_human_value)
-        self.human_bar.setProperty('value', self.current_water + self.current_calories)
-        self.calNumber.setProperty('intValue', self.current_calories)
-        self.max_calories_number.setProperty("intValue", self.max_calories)
-        self.save_data()
+        CT_backend.set_calories_to_2000(self)
 
     def set_calories_to_2500(self):
-        self.max_calories = 2500
-        self.max_human_value = self.max_water + self.max_calories
-        if self.max_calories <= self.current_calories:
-            self.current_calories = self.max_calories
-        self.calBar.setMaximum(self.max_calories)
-        self.calBar.setProperty('value', self.current_calories)
-        self.human_bar.setMaximum(self.max_human_value)
-        self.human_bar.setProperty('value', self.current_water + self.current_calories)
-        self.calNumber.setProperty('intValue', self.current_calories)
-        self.max_calories_number.setProperty("intValue", self.max_calories)
-        self.save_data()
+        CT_backend.set_calories_to_2500(self)
 
     def set_calories_to_3000(self):
-        self.max_calories = 3000
-        # could be made a function from here on lol?
-        self.max_human_value = self.max_water + self.max_calories
-        if self.max_calories <= self.current_calories:
-            self.current_calories = self.max_calories
-        self.calBar.setMaximum(self.max_calories)
-        self.calBar.setProperty('value', self.current_calories)
-        self.human_bar.setMaximum(self.max_human_value)
-        self.human_bar.setProperty('value', self.current_water + self.current_calories)
-        self.calNumber.setProperty('intValue', self.current_calories)
-        self.max_calories_number.setProperty("intValue", self.max_calories)
-        self.save_data()
+        CT_backend.set_calories_to_3000(self)
 
     def set_calories_to_3500(self):
-        self.max_calories = 3500
-        self.max_human_value = self.max_water + self.max_calories
-        if self.max_calories <= self.current_calories:
-            self.current_calories = self.max_calories
-        self.calBar.setMaximum(self.max_calories)
-        self.calBar.setProperty('value', self.current_calories)
-        self.human_bar.setMaximum(self.max_human_value)
-        self.human_bar.setProperty('value', self.current_water + self.current_calories)
-        self.calNumber.setProperty('intValue', self.current_calories)
-        self.max_calories_number.setProperty("intValue", self.max_calories)
-        self.save_data()
+        CT_backend.set_calories_to_3500(self)
 
     def set_calories_to_4000(self):
-        self.max_calories = 4000
-        self.max_human_value = self.max_water + self.max_calories
-        if self.max_calories <= self.current_calories:
-            self.current_calories = self.max_calories
-        self.calBar.setMaximum(self.max_calories)
-        self.calBar.setProperty('value', self.current_calories)
-        self.human_bar.setMaximum(self.max_human_value)
-        self.human_bar.setProperty('value', self.current_water + self.current_calories)
-        self.calNumber.setProperty('intValue', self.current_calories)
-        self.max_calories_number.setProperty("intValue", self.max_calories)
-        self.save_data()
+        CT_backend.set_calories_to_4000(self)
 
     def open_about(self):
         if self.light_on == False:
-            app.setStyleSheet("""QPushButton {
-            background-color: rgb(90, 90, 90);
-            color: white;
-            } 
-            QLabel {
-            color: white
-            }""")
+            app.setStyleSheet(CT_stylesheets.app_open_about1)
             QtWidgets.QMessageBox.information(MainWindow,
                 'About CT', 
                 "Version: v1.0.0\nRelease date: 03/09/2019\nMade in: Python 3.6.0/PyQt5 5.13.0\nTested on: Windows 10 (x64)",
                 QtWidgets.QMessageBox.Ok)
-            app.setStyleSheet("""QPushButton {
-            background-color: white;
-            color: black;
-            }
-            QLabel {
-            color: white;
-            }""")
+            app.setStyleSheet(CT_stylesheets.app_open_about2)
         else:
             QtWidgets.QMessageBox.information(MainWindow,
                 'About CT', 
@@ -1060,25 +701,13 @@ class ConsumptionTracker():
 
     def open_project_page(self):
         if self.light_on == False:
-            app.setStyleSheet("""QPushButton {
-            background-color: rgb(90, 90, 90);
-            color: white;
-            } 
-            QLabel {
-            color: white
-            }""")            
+            app.setStyleSheet(CT_stylesheets.app_open_project1)          
             choice = QtWidgets.QMessageBox.question(MainWindow, 
                 'View project page', 'This will open a new browser tab.', 
                 QtWidgets.QMessageBox.Ok | QtWidgets.QMessageBox.Cancel)
             if choice == QtWidgets.QMessageBox.Ok:
                 webbrowser.open_new_tab('https://github.com/porgabi/consumption-tracker')
-            app.setStyleSheet("""QPushButton {
-            background-color: white;
-            color: black;
-            }
-            QLabel {
-            color: white;
-            }""")
+            app.setStyleSheet(CT_stylesheets.app_open_project2)
         else:
             choice = QtWidgets.QMessageBox.question(MainWindow, 
                 'View project page', 'This will open a new browser tab.', 
@@ -1087,40 +716,12 @@ class ConsumptionTracker():
                 webbrowser.open_new_tab('https://github.com/porgabi/consumption-tracker')
 
     # TOOLBAR functions
-    def resetApp(self):
-        self.current_water = 0
-        self.waterBar.setProperty('value', self.current_water)
-        self.waterNumber.setProperty('intValue', self.current_water)
-        self.current_calories = 0
-        self.calBar.setProperty('value', self.current_calories)
-        self.calNumber.setProperty('intValue', self.current_calories)
-        self.human_bar.setProperty('value', self.current_water + self.current_calories)
-        self.mealText.setText(self.null_meal)
-        self.meal_logger_presses = 0
-        self.saved_hour = QtCore.QTime(8, 0)
-        self.saved_min = QtCore.QTime(8, 0)
-        self.hourEdit.setTime(QtCore.QTime(8, 0))
-        self.minEdit.setTime(QtCore.QTime(8, 0))
-        self.save_data()
+    def reset_app(self):
+        CT_backend.reset_app(self)
 
-    def screenshot(self):
-        frame_pos_raw = str(MainWindow.frameGeometry())
-        frame_pos_string = frame_pos_raw.replace('PyQt5.QtCore.QRect', '')
-        frame_pos = eval(frame_pos_string)        
-        ss = pyautogui.screenshot(imageFilename=None, region=frame_pos)
-        current_time_raw = datetime.datetime.now()
-        current_time = current_time_raw.strftime('%H-%M-%S_%d-%m-%Y')
-        
-        if self.ss_directory == "":
-            try:
-                os.mkdir(self.home_path + '\\CT_screenshots')
-            except FileExistsError:
-                pass
-            self.ss_directory = self.home_path + '\\CT_screenshots'            
-            ss.save(self.ss_directory + '\\' + current_time + '.png')
-        else:
-            ss.save(self.ss_directory + '\\' + current_time + '.png')
-        self.save_data()
+    def take_screenshot(self):
+        self.frame_pos_raw = str(MainWindow.frameGeometry())    
+        CT_backend.take_screenshot(self)
 
     def switch_appearance(self):
         if self.light_on == True:
@@ -1133,117 +734,32 @@ class ConsumptionTracker():
             self.dark_palette.setColor(QtGui.QPalette.Window, QtGui.QColor(90, 90, 90))
             app.setPalette(self.dark_palette)
             
-            self.subWaterButton.setStyleSheet('background: rgb(90, 90, 90)')
-            self.waterButton1.setStyleSheet('background: rgb(90, 90, 90)')
-            self.waterButton2.setStyleSheet('background: rgb(90, 90, 90)')
-            self.waterButton3.setStyleSheet('background: rgb(90, 90, 90)')
+            self.subWaterButton.setStyleSheet(CT_stylesheets.background_dark)
+            self.waterButton1.setStyleSheet(CT_stylesheets.background_dark)
+            self.waterButton2.setStyleSheet(CT_stylesheets.background_dark)
+            self.waterButton3.setStyleSheet(CT_stylesheets.background_dark)
+            self.subCalBtn.setStyleSheet(CT_stylesheets.background_dark)
+            self.calButton1.setStyleSheet(CT_stylesheets.background_dark)
+            self.calButton2.setStyleSheet(CT_stylesheets.background_dark)
+            self.calButton3.setStyleSheet(CT_stylesheets.background_dark)
+            self.waterBar.setStyleSheet(CT_stylesheets.water_bar_dark)
+            self.calBar.setStyleSheet(CT_stylesheets.cal_bar_dark)
 
-            self.subCalBtn.setStyleSheet('background: rgb(90, 90, 90)')
-            self.calButton1.setStyleSheet('background: rgb(90, 90, 90)')
-            self.calButton2.setStyleSheet('background: rgb(90, 90, 90)')
-            self.calButton3.setStyleSheet('background: rgb(90, 90, 90)')
+            # tooltip_dark
+            app.setStyleSheet(CT_stylesheets.tooltip_dark)
 
-            self.waterBar.setStyleSheet("QProgressBar:horizontal {\n"
-            "border: 2px solid black;\n"
-            "border-radius: 3px;\n"
-            "background: rgb(90, 90, 90);\n"
-            "padding: 0px;\n"
-            "text-align: center;\n"
-            "margin-right: 0ex;\n"
-            "font: 16pt \"Segoe UI\";\n"
-            "}\n"
-            "QProgressBar::chunk:horizontal {\n"
-            "background: qlineargradient(x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 rgba(135, 224, 255, 255), stop: 1 rgba(64, 164, 223, 255));\n"
-            "}\n"
-            "QProgressBar {"
-            "color: white;"
-            "font: 15px"
-            "}")
+            self.menubar.setStyleSheet(CT_stylesheets.menubar_dark)
 
-            self.calBar.setStyleSheet("QProgressBar:horizontal {\n"
-            "border: 2px solid black;\n"
-            "border-radius: 3px;\n"
-            "background: rgb(90, 90, 90);\n"
-            "padding: 0px;\n"
-            "text-align: center;\n"
-            "margin-right: 0ex;\n"
-            "}\n"
-            "QProgressBar::chunk:horizontal {\n"
-            "background: qlineargradient(x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 yellow, stop: 1 rgba(255, 170, 170, 255));\n"
-            "}\n"
-            "QProgressBar {"
-            "color: white;"
-            "font: 15px"
-            "}")
+            # TODO include water menu style in menubar stylesheet
+            self.set_water_menu.setStyleSheet(CT_stylesheets.secondary_menu_dark)
+            self.set_calories_menu.setStyleSheet(CT_stylesheets.secondary_menu_dark)
 
-            app.setStyleSheet("""
-            QToolTip { 
-            background-color: rgb(90, 90, 90); 
-            color: white; 
-            border: 1px solid white
-            }
-            QLabel {
-            color: white;
-            }""")
-
-            self.menubar.setStyleSheet("""
-            QMenuBar {
-                background-color: rgb(90, 90, 90);
-                color: rgb(255,255,255);
-            }
-            QMenuBar::item {
-                background-color: rgb(90, 90, 90);
-                color: rgb(255,255,255);
-            }
-            QMenuBar::item::selected {
-                background-color: rgb(120, 120, 120);
-            }
-            QMenu {
-                background-color: rgb(90, 90, 90);
-                color: rgb(255,255,255);
-                border: 1px solid white;           
-            }
-            QMenu::item::selected {
-                background-color: rgb(120, 120, 120);
-            }
-            """)
-            self.set_water_menu.setStyleSheet("""
-            QMenu {
-                background-color: rgb(90, 90, 90);
-                color: rgb(255,255,255);
-                border: 1px solid white;           
-            }
-            QMenu::item::selected {
-                background-color: rgb(120, 120, 120);
-            }
-            """)
-            self.set_calories_menu.setStyleSheet("""
-            QMenu {
-                background-color: rgb(90, 90, 90);
-                color: rgb(255,255,255);
-                border: 1px solid white;           
-            }
-            QMenu::item::selected {
-                background-color: rgb(120, 120, 120);
-            }
-            """)
-
-            self.toolBar.setStyleSheet("""
-            QToolBar {
-                background-color: rgb(90, 90, 90);
-            }
-            
-            QToolButton {
-                background-color: rgb(90, 90, 90);
-            }
-            """)
-
-
-            self.mealTimeBtn.setStyleSheet('background: rgb(90, 90, 90)')
+            self.toolBar.setStyleSheet(CT_stylesheets.toolbar_dark)
+            self.mealTimeBtn.setStyleSheet(CT_stylesheets.background_dark)
             self.get_current_time_btn.setStyleSheet('background: rgb(90, 90, 90); color: white')
 
-            self.hourEdit.setStyleSheet('background: rgb(90, 90, 90); color: white')
-            self.minEdit.setStyleSheet('background: rgb(90, 90, 90); color: white')
+            self.hourEdit.setStyleSheet(CT_stylesheets.time_edit_dark)
+            self.minEdit.setStyleSheet(CT_stylesheets.time_edit_dark)
             run_light_icon = QtGui.QIcon()
             run_light_icon.addPixmap(QtGui.QPixmap("CT_icons/runLight.png"))
             self.subCalBtn.setIcon(run_light_icon)
@@ -1266,108 +782,26 @@ class ConsumptionTracker():
             self.light_palette.setColor(QtGui.QPalette.Window, QtGui.QColor(255, 255, 255))
             app.setPalette(self.light_palette)
 
-            self.mealTimeBtn.setStyleSheet('background: rgb(255, 255, 255)')
+            self.mealTimeBtn.setStyleSheet(CT_stylesheets.background_light)
             self.get_current_time_btn.setStyleSheet('background: rgb(255, 255, 255); color: black')
-            self.subWaterButton.setStyleSheet('background: rgb(255, 255, 255)')
-            self.waterButton1.setStyleSheet('background: rgb(255, 255, 255)')
-            self.waterButton2.setStyleSheet('background: rgb(255, 255, 255)')
-            self.waterButton3.setStyleSheet('background: rgb(255, 255, 255)')
-            self.subCalBtn.setStyleSheet('background: rgb(255, 255, 255)')
-            self.calButton1.setStyleSheet('background: rgb(255, 255, 255)')
-            self.calButton2.setStyleSheet('background: rgb(255, 255, 255)')
-            self.calButton3.setStyleSheet('background: rgb(255, 255, 255)')
-            self.waterBar.setStyleSheet("QProgressBar:horizontal {\n"
-            "border: 2px solid black;\n"
-            "border-radius: 3px;\n"
-            "background: white;\n"
-            "padding: 0px;\n"
-            "text-align: center;\n"
-            "margin-right: 0ex;\n"
-            "}\n"
-            "QProgressBar::chunk:horizontal {\n"
-            "background: qlineargradient(x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 rgba(135, 224, 255, 255), stop: 1 rgba(64, 164, 223, 255));\n"
-            "}\n"            
-            "QProgressBar {"
-            "color: black;"            
-            "font: 15px"
-            "}")
-            self.calBar.setStyleSheet("QProgressBar:horizontal {\n"
-            "border: 2px solid black;\n"
-            "border-radius: 3px;\n"
-            "background: white;\n"
-            "padding: 0px;\n"
-            "text-align: center;\n"
-            "margin-right: 0ex;\n"
-            "}\n"
-            "QProgressBar::chunk:horizontal {\n"
-            "background: qlineargradient(x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 yellow, stop: 1 rgba(255, 170, 170, 255));\n"
-            "}\n"
-            "QProgressBar {"
-            "color: black;"            
-            "font: 15px"
-            "}")
-            app.setStyleSheet("""
-            QToolTip { 
-            background-color: white; 
-            color: black; 
-            border: 1px solid black;
-            }
-            QLabel {
-            color: black;
-            }""")
-            self.menubar.setStyleSheet("""
-            QMenuBar {
-                background-color: rgb(255, 255, 255);
-                color: black;
-            }
-            QMenuBar::item {
-                background-color: rgb(255, 255, 255);
-                color: black;
-            }
-            QMenuBar::item::selected {
-                background-color: rgb(220, 220, 220);
-            }
-            QMenu {
-                background-color: rgb(255, 255, 255);
-                color: black;
-                border: 1px solid black;           
-            }
-            QMenu::item::selected {
-                background-color: rgb(220, 220, 220);
-            }
-            """)
-            self.set_water_menu.setStyleSheet("""
-            QMenu {
-                background-color: rgb(255, 255, 255);
-                color: black;
-                border: 1px solid black;           
-            }
-            QMenu::item::selected {
-                background-color: rgb(220, 220, 220);
-            }
-            """)
-            self.set_calories_menu.setStyleSheet("""
-            QMenu {
-                background-color: rgb(255, 255, 255);
-                color: black;
-                border: 1px solid black;           
-            }
-            QMenu::item::selected {
-                background-color: rgb(220, 220, 220);
-            }
-            """)
-            self.toolBar.setStyleSheet("""
-            QToolBar {
-                background-color: white;
-            }
-            
-            QToolButton {
-                background-color: white;
-            }
-            """)
+            self.subWaterButton.setStyleSheet(CT_stylesheets.background_light)
+            self.waterButton1.setStyleSheet(CT_stylesheets.background_light)
+            self.waterButton2.setStyleSheet(CT_stylesheets.background_light)
+            self.waterButton3.setStyleSheet(CT_stylesheets.background_light)
+            self.subCalBtn.setStyleSheet(CT_stylesheets.background_light)
+            self.calButton1.setStyleSheet(CT_stylesheets.background_light)
+            self.calButton2.setStyleSheet(CT_stylesheets.background_light)
+            self.calButton3.setStyleSheet(CT_stylesheets.background_light)
+            self.waterBar.setStyleSheet(CT_stylesheets.water_bar_light)
+            self.calBar.setStyleSheet(CT_stylesheets.cal_bar_light)
+            app.setStyleSheet(CT_stylesheets.tooltip_light)
+            self.menubar.setStyleSheet(CT_stylesheets.menubar_light)
+            self.set_water_menu.setStyleSheet(CT_stylesheets.secondary_menu_light)
+            self.set_calories_menu.setStyleSheet(CT_stylesheets.secondary_menu_light)
+            self.toolBar.setStyleSheet(CT_stylesheets.toolbar_light)
 
-            self.hourEdit.setStyleSheet('background: rgb(255, 255, 255); color: black')
-            self.minEdit.setStyleSheet('background: rgb(255, 255, 255); color: black')
+            self.hourEdit.setStyleSheet(CT_stylesheets.time_edit_light)
+            self.minEdit.setStyleSheet(CT_stylesheets.time_edit_light)
             run_dark_icon = QtGui.QIcon()
             run_dark_icon.addPixmap(QtGui.QPixmap("CT_icons/runDark.png"))
             self.subCalBtn.setIcon(run_dark_icon)
@@ -1393,184 +827,39 @@ class ConsumptionTracker():
         self.tray.hide()
     
     def image_swapper(self):
-        if self.light_on == True:
-            if self.human_image_is_malebodylight == True:
-                self.human_image.setPixmap(QtGui.QPixmap("CT_icons/femalebodylight.png"))
-                self.human_image_is_malebodylight = False
-                self.current_body = 'female_light'
-            else:
-                self.human_image.setPixmap(QtGui.QPixmap("CT_icons/malebodylight.png"))
-                self.human_image_is_malebodylight = True
-                self.current_body = 'male_light'
-        else:
-            if self.human_image_is_malebodydark == True:
-                self.human_image.setPixmap(QtGui.QPixmap("CT_icons/femalebodydark.png"))
-                self.human_image_is_malebodydark = False
-                self.current_body = 'female_dark'
-            else:
-                self.human_image.setPixmap(QtGui.QPixmap("CT_icons/malebodydark.png"))
-                self.human_image_is_malebodydark = True
-                self.current_body = 'male_dark'
-        self.save_data()
+        CT_backend.image_swapper(self)
 
     # WATER MANAGEMENT functions
     def waterSubtractor(self):
-        self.current_water -= 100 # ml
-        self.waterBar.setProperty('value', self.current_water)
-        if self.current_water <= 0:
-            self.waterBar.setProperty('value', 0)
-            self.current_water = 0
-        if self.current_water + self.current_calories <= 0:
-            self.human_bar.setProperty('value', 0)
-        self.human_bar.setProperty('value', self.current_water + self.current_calories)
-        self.waterNumber.setProperty('intValue', (self.current_water / 100))
-        self.save_data()
+        CT_backend.water_subtractor(self)
 
     def waterCupAdder(self):
-        self.current_water += 200
-        self.waterBar.setProperty('value', self.current_water)
-        if self.current_water >= self.max_water:
-            self.waterBar.setProperty('value', self.max_water)
-            self.current_water = self.max_water
-        if self.current_water + self.current_calories >= self.max_human_value:  
-            self.human_bar.setProperty('value', self.max_human_value)
-        self.human_bar.setProperty('value', self.current_water + self.current_calories) # current human value
-        self.waterNumber.setProperty('intValue', (self.current_water / 100))
-        self.save_data()
+        CT_backend.waterCupAdder(self)
 
     def smallBottleAdder(self):
-        self.current_water += 500
-        self.waterBar.setProperty('value', self.current_water)
-        if self.current_water >= self.max_water:
-            self.waterBar.setProperty('value', self.max_water)
-            self.current_water = self.max_water
-        if self.current_water + self.current_calories >= self.max_human_value:   
-            self.human_bar.setProperty('value', self.max_human_value)
-        self.human_bar.setProperty('value', self.current_water + self.current_calories)
-        self.waterNumber.setProperty('intValue', (self.current_water / 100))
-        self.save_data()
+        CT_backend.smallBottleAdder(self)
 
     def largeBottleAdder(self):
-        self.current_water += 1000
-        self.waterBar.setProperty('value', self.current_water)
-        if self.current_water >= self.max_water:
-            self.waterBar.setProperty('value', self.max_water)
-            self.current_water = self.max_water
-        if self.current_water + self.current_calories >= self.max_human_value:    
-            self.human_bar.setProperty('value', self.max_human_value)
-        self.human_bar.setProperty('value', self.current_water  + self.current_calories)
-        self.waterNumber.setProperty('intValue', (self.current_water / 100))
-        self.save_data()
+        CT_backend.largeBottleAdder(self)
 
     def calSubtractor(self):
-        self.current_calories -= 100
-        self.calBar.setProperty('value', self.current_calories)
-        if self.current_calories <= 0:
-            self.calBar.setProperty('value', 0)
-            self.current_calories = 0
-        else:
-            self.human_bar.setProperty('value', self.current_water + self.current_calories)
-        if self.current_water + self.current_calories <= 0:
-            self.human_bar.setProperty('value', 0)
-        self.human_bar.setProperty('value', self.current_water + self.current_calories)
-        self.calNumber.setProperty('intValue', self.current_calories)
-        self.save_data()
+        CT_backend.calSubtractor(self)
 
     def sandwichAdder(self):
-        self.current_calories += 200
-        self.calBar.setProperty('value', self.current_calories)
-        if self.current_calories >= self.max_calories:
-            self.calBar.setProperty('value', self.max_calories)
-            self.current_calories = self.max_calories
-        if self.current_water + self.current_calories >= self.max_human_value:    
-            self.human_bar.setProperty('value', self.max_human_value)
-        self.human_bar.setProperty('value', self.current_water + self.current_calories)
-        self.calNumber.setProperty('intValue', self.current_calories)
-        self.save_data()
-
+        CT_backend.sandwichAdder(self)
+    
     def eggsAdder(self):
-        self.current_calories += 500
-        self.calBar.setProperty('value', self.current_calories)
-        if self.current_calories >= self.max_calories:
-            self.calBar.setProperty('value', self.max_calories)
-            self.current_calories = self.max_calories
-        if self.current_water + self.current_calories >= 6000:    
-            self.human_bar.setProperty('value', self.max_human_value)
-        self.human_bar.setProperty('value', self.current_water + self.current_calories)    
-        self.calNumber.setProperty('intValue', self.current_calories)
-        self.save_data()
+        CT_backend.eggsAdder(self)
 
     def meatAdder(self):
-        self.current_calories += 1000
-        self.calBar.setProperty('value', self.current_calories)
-        if self.current_calories >= self.max_calories:
-            self.calBar.setProperty('value', self.max_calories)
-            self.current_calories = self.max_calories
-        if self.current_water + self.current_calories >= self.max_human_value:
-            self.human_bar.setProperty('value', self.max_human_value)
-        self.human_bar.setProperty('value', self.current_water + self.current_calories)
-        self.calNumber.setProperty('intValue', self.current_calories)
-        self.save_data()
+        CT_backend.meatAdder(self)
 
     # MEAL TIME LOGGING functions
     def time_to_current_moment(self):
-        current_time_raw = datetime.datetime.now()
-        hour_now_raw = current_time_raw.strftime('%H')
-        minute_now_raw = current_time_raw.strftime('%M')
-        
-        hour_now = int(hour_now_raw)
-        minute_now = int(minute_now_raw)
-        hh = QtCore.QTime(hour_now, 0)
-        mm = QtCore.QTime(0, minute_now)
-
-        self.minEdit.setTime(mm)
-        self.hourEdit.setTime(hh)
-        self.save_data()
+        CT_backend.time_to_current_moment(self)
         
     def meal_logger(self):
-        self.meal_logger_presses += 1
-        hourRaw = str(self.hourEdit.time())
-        minRaw = str(self.minEdit.time())
-        if len(hourRaw) == 24:
-            hourSliced = hourRaw[19]
-        else:
-            hourSliced = hourRaw[19] + hourRaw[20]
-        if len(hourSliced) == 1:
-            hour = hourSliced.replace(hourSliced, "0" + hourSliced)
-        else:
-            hour = hourSliced
-        if len(minRaw) == 24:
-            minSliced = minRaw[22]
-        else:
-            minSliced = minRaw[22] + minRaw[23]
-        if len(minSliced) == 1:
-            minutes = minSliced.replace(minSliced, "0" + minSliced)
-        else:
-            minutes = minSliced
-        meal_time = f'Meal at {hour}:{minutes}.'
-        
-        # good grief what is this abomination
-        if self.meal_logger_presses == 1:
-            self.first_meal = '1. ' + meal_time
-            self.mealText.setText(self.first_meal)
-        elif self.meal_logger_presses == 2:
-            self.second_meal = self.first_meal + '\n\n2. ' + meal_time
-            self.mealText.setText(self.second_meal)
-        elif self.meal_logger_presses == 3:
-            self.third_meal = self.second_meal + '\n\n3. ' + meal_time
-            self.mealText.setText(self.third_meal)
-        elif self.meal_logger_presses == 4:
-            self.fourth_meal = self.third_meal + '\n\n4. ' + meal_time
-            self.mealText.setText(self.fourth_meal)
-        elif self.meal_logger_presses == 5:
-            self.fifth_meal = self.fourth_meal + '\n\n5. ' + meal_time
-            self.mealText.setText(self.fifth_meal)
-        elif self.meal_logger_presses == 6:
-            self.sixth_meal = self.fifth_meal + '\n\n6. ' + meal_time
-            self.mealText.setText(self.sixth_meal)
-        elif self.meal_logger_presses > 6:
-            self.meal_logger_presses = 6
-        self.save_data()
+        CT_backend.meal_logger(self)
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
@@ -1667,13 +956,7 @@ class ConsumptionTracker():
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
     app.setStyle('Fusion')
-    app.setStyleSheet("""
-    QToolTip { 
-    background-color: white; 
-    color: black; 
-    border: 1px solid black
-    }""")
-
+    app.setStyleSheet(CT_stylesheets.tooltip_light)
 
     MainWindow = QtWidgets.QMainWindow()
     ui = ConsumptionTracker()
