@@ -97,7 +97,7 @@ text_label_font1 = "font: 11pt \"Segoe UI\";"
 
 text_label_font2 = "font: 12pt \"Segoe UI\";"
 
-menubar_light = ("""
+menu_bar_light = ("""
     QMenuBar {
         background-color: rgb(255, 255, 255);
         color: black;
@@ -120,7 +120,7 @@ menubar_light = ("""
     """
 )
 
-menubar_dark = ("""
+menu_bar_dark = ("""
     QMenuBar {
         background-color: rgb(90, 90, 90);
         color: rgb(255, 255, 255);
@@ -151,7 +151,7 @@ menubar_dark = ("""
     """
 )
 
-toolbar_light = ("""
+tool_bar_light = ("""
     QToolBar {
         background-color: white;
     }
@@ -161,7 +161,7 @@ toolbar_light = ("""
     """
 )
 
-toolbar_dark = ("""
+tool_bar_dark = ("""
     QToolBar {
         background-color: rgb(90, 90, 90);
     }

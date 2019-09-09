@@ -9,78 +9,35 @@ import CT_backend, CT_stylesheets
 class ConsumptionTracker():
 
     def setupUi(self, MainWindow):
-        # default values
-        self.current_calories = 0
-        self.current_water = 0
-        self.meal_logger_presses = 0
-        self.light_on = True
-        self.current_body = 'male_light'
-        self.ss_directory = ""
-        self.null_meal = ''
-        self.first_meal = ""
-        self.second_meal = ""
-        self.third_meal = ""
-        self.fourth_meal = ""
-        self.fifth_meal = ""
-        self.sixth_meal = ""
-        self.saved_hour = QtCore.QTime(8, 0)
-        self.saved_min = QtCore.QTime(0, 0)
-        self.reset_app_value = False
-        self.current_time_raw = datetime.datetime.now()
-        self.current_time = datetime.datetime(self.current_time_raw.year,
-                                              self.current_time_raw.month,
-                                              self.current_time_raw.day)
-        self.previous_time = self.current_time
-        self.max_water = 3000
-        self.max_calories = 2500
+        if 'saved_data.json' in os.listdir():
+            CT_backend.load_data(self)
+        else:
+            # default values
+            self.current_calories = 0
+            self.current_water = 0
+            self.meal_logger_presses = 0
+            self.light_on = True
+            self.current_body = 'male_light'
+            self.ss_directory = ""
+            self.null_meal = ''
+            self.first_meal = ""
+            self.second_meal = ""
+            self.third_meal = ""
+            self.fourth_meal = ""
+            self.fifth_meal = ""
+            self.sixth_meal = ""
+            self.saved_hour = QtCore.QTime(8, 0)
+            self.saved_min = QtCore.QTime(0, 0)
+            self.reset_app_value = False
+            self.current_time_raw = datetime.datetime.now()
+            self.current_time = datetime.datetime(self.current_time_raw.year,
+                                                  self.current_time_raw.month,
+                                                  self.current_time_raw.day)
+            self.previous_time = self.current_time
+            self.max_water = 3000
+            self.max_calories = 2500
     
-        # loading saved values
-        if 'data.json' in os.listdir():
-            with open('data.json') as json_file:
-                data = json.load(json_file)
-                for i in data['saved_variables']:
-                    if "current_calories" in i:
-                        self.current_calories = i['current_calories']
-                    if 'current_water' in i:
-                        self.current_water = i['current_water']
-                    if 'meal_logger_presses' in i:
-                        self.meal_logger_presses = i['meal_logger_presses']
-                    if 'light_on' in i:
-                        self.light_on = bool('True' == i['light_on'])
-                    if 'current_body' in i:
-                        self.current_body = i['current_body']
-                    if 'ss_directory' in i:
-                        self.ss_directory = i['ss_directory']
-                    if 'first_meal' in i:
-                        self.first_meal = i['first_meal']
-                    if 'second_meal' in i:
-                        self.second_meal = i['second_meal']
-                    if 'third_meal' in i:
-                        self.third_meal = i['third_meal']
-                    if 'fourth_meal' in i:
-                        self.fourth_meal = i['fourth_meal']
-                    if 'fifth_meal' in i:
-                        self.fifth_meal = i['fifth_meal']
-                    if 'sixth_meal' in i:
-                        self.sixth_meal = i['sixth_meal']
-                    if 'saved_hour' in i:
-                        saved_hour_raw = i['saved_hour']
-                    if 'saved_minute' in i:                    
-                        saved_min_raw = i['saved_minute']
-                    if 'reset_app_value' in i:
-                        self.reset_app_value = bool('True' == i['reset_app_value'])
-                    if 'last_time' in i:
-                        self.last_time = i['last_time']
-                        self.previous_time = datetime.datetime(self.last_time[2],\
-                                                               self.last_time[1],\
-                                                               self.last_time[0])
-                    if 'max_water' in i:
-                        self.max_water = i['max_water']
-                    if 'max_calories' in i:
-                        self.max_calories = i['max_calories']
-                    self.saved_hour = QtCore.QTime(saved_hour_raw, 0)
-                    self.saved_min = QtCore.QTime(0, saved_min_raw)
-        
+
         self.max_human_value = (self.max_water + self.max_calories)
         self.home_path = os.environ['HOMEDRIVE'] + os.environ['HOMEPATH']
         
@@ -109,7 +66,7 @@ class ConsumptionTracker():
         self.human_image.setGeometry(QtCore.QRect(55, 10, 167, 500))
         self.human_image.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.human_image.setFrameShadow(QtWidgets.QFrame.Plain)
-        self.human_image.setStyleSheet("border: 0px solid transparent;\n")
+        self.human_image.setStyleSheet("border: 0px solid transparent;")
         
         if self.current_body == "male_light":
             self.human_image.setPixmap(QtGui.QPixmap("CT_icons/malebodylight.png"))
@@ -143,39 +100,39 @@ class ConsumptionTracker():
         self.human_image.raise_()        
         
         # water progress bar
-        self.waterBar = QtWidgets.QProgressBar(self.centralwidget)
-        self.waterBar.setGeometry(QtCore.QRect(20, 514, 250, 36))
+        self.water_bar = QtWidgets.QProgressBar(self.centralwidget)
+        self.water_bar.setGeometry(QtCore.QRect(20, 514, 250, 36))
         if self.light_on is True:
-            self.waterBar.setStyleSheet(CT_stylesheets.water_bar_light)
+            self.water_bar.setStyleSheet(CT_stylesheets.water_bar_light)
         else:
-            self.waterBar.setStyleSheet(CT_stylesheets.water_bar_dark)
-        self.waterBar.setMaximum(self.max_water)
-        self.waterBar.setProperty('value', self.current_water)
-        self.waterBar.setObjectName("waterBar")        
+            self.water_bar.setStyleSheet(CT_stylesheets.water_bar_dark)
+        self.water_bar.setMaximum(self.max_water)
+        self.water_bar.setProperty('value', self.current_water)
+        self.water_bar.setObjectName("water_bar")        
 
         # calories progress bar
-        self.calBar = QtWidgets.QProgressBar(self.centralwidget)
-        self.calBar.setGeometry(QtCore.QRect(20, 564, 250, 36))
+        self.cal_bar = QtWidgets.QProgressBar(self.centralwidget)
+        self.cal_bar.setGeometry(QtCore.QRect(20, 564, 250, 36))
         if self.light_on is True:
-            self.calBar.setStyleSheet(CT_stylesheets.cal_bar_light)
+            self.cal_bar.setStyleSheet(CT_stylesheets.cal_bar_light)
         else:
-            self.calBar.setStyleSheet(CT_stylesheets.cal_bar_dark)
-        self.calBar.setMaximum(self.max_calories)
-        self.calBar.setProperty("value", self.current_calories)        
-        self.calBar.setOrientation(QtCore.Qt.Horizontal)
-        self.calBar.setObjectName("calBar")
+            self.cal_bar.setStyleSheet(CT_stylesheets.cal_bar_dark)
+        self.cal_bar.setMaximum(self.max_calories)
+        self.cal_bar.setProperty("value", self.current_calories)        
+        self.cal_bar.setOrientation(QtCore.Qt.Horizontal)
+        self.cal_bar.setObjectName("cal_bar")
         
         # current water LCD display
-        self.waterNumber = QtWidgets.QLCDNumber(self.centralwidget)
-        self.waterNumber.setGeometry(QtCore.QRect(290, 510, 100, 42))
-        self.waterNumber.setStyleSheet(CT_stylesheets.water_color)
-        self.waterNumber.setFrameShape(QtWidgets.QFrame.NoFrame)
-        self.waterNumber.setDigitCount(2)
-        self.waterNumber.setSegmentStyle(QtWidgets.QLCDNumber.Flat)
-        self.waterNumber.setProperty("intValue", (self.current_water / 100))
-        self.waterNumber.setObjectName("waterNumber")
+        self.water_number = QtWidgets.QLCDNumber(self.centralwidget)
+        self.water_number.setGeometry(QtCore.QRect(290, 510, 100, 42))
+        self.water_number.setStyleSheet(CT_stylesheets.water_color)
+        self.water_number.setFrameShape(QtWidgets.QFrame.NoFrame)
+        self.water_number.setDigitCount(2)
+        self.water_number.setSegmentStyle(QtWidgets.QLCDNumber.Flat)
+        self.water_number.setProperty("intValue", (self.current_water / 100))
+        self.water_number.setObjectName("water_number")
 
-        # waterLCD per label
+        # water LCD per label
         self.water_LCD_per_sign = QtWidgets.QLabel(self.centralwidget)
         self.water_LCD_per_sign.setGeometry(QtCore.QRect(360, 507, 20, 42))
         self.water_LCD_per_sign.setStyleSheet("font: 30pt \"Segoe UI\";""color: rgb(64, 164, 223)")
@@ -202,16 +159,16 @@ class ConsumptionTracker():
         self.water_unit_label.setObjectName("water_unit_label")
         
         # current calories LCD display
-        self.calNumber = QtWidgets.QLCDNumber(self.centralwidget)
-        self.calNumber.setGeometry(QtCore.QRect(270, 560, 100, 42))
-        self.calNumber.setStyleSheet(CT_stylesheets.cal_color)
-        self.calNumber.setFrameShape(QtWidgets.QFrame.NoFrame)
-        self.calNumber.setDigitCount(4)
-        self.calNumber.setSegmentStyle(QtWidgets.QLCDNumber.Flat)
-        self.calNumber.setProperty("intValue", self.current_calories)
-        self.calNumber.setObjectName("calNumber")
+        self.cal_number = QtWidgets.QLCDNumber(self.centralwidget)
+        self.cal_number.setGeometry(QtCore.QRect(270, 560, 100, 42))
+        self.cal_number.setStyleSheet(CT_stylesheets.cal_color)
+        self.cal_number.setFrameShape(QtWidgets.QFrame.NoFrame)
+        self.cal_number.setDigitCount(4)
+        self.cal_number.setSegmentStyle(QtWidgets.QLCDNumber.Flat)
+        self.cal_number.setProperty("intValue", self.current_calories)
+        self.cal_number.setObjectName("cal_number")
 
-        # calNumberLCD per label
+        # cal_number LCD per label
         self.calories_LCD_per_sign = QtWidgets.QLabel(self.centralwidget)
         self.calories_LCD_per_sign.setGeometry(QtCore.QRect(360, 557, 20, 42))
         self.calories_LCD_per_sign.setStyleSheet("font: 30pt \"Segoe UI\";""color: rgba(255, 130, 0, 255)")
@@ -238,190 +195,190 @@ class ConsumptionTracker():
         self.calories_unit_label.setObjectName("calories_unit_label")
 
         # manage water label
-        self.addWaterLabel = QtWidgets.QLabel(self.centralwidget)
-        self.addWaterLabel.setGeometry(QtCore.QRect(500, 10, 100, 30))
-        self.addWaterLabel.setStyleSheet(CT_stylesheets.text_label_font2)
-        self.addWaterLabel.setScaledContents(False)
-        self.addWaterLabel.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignCenter)
-        self.addWaterLabel.setObjectName("addWaterLabel")
+        self.add_water_label = QtWidgets.QLabel(self.centralwidget)
+        self.add_water_label.setGeometry(QtCore.QRect(500, 10, 100, 30))
+        self.add_water_label.setStyleSheet(CT_stylesheets.text_label_font2)
+        self.add_water_label.setScaledContents(False)
+        self.add_water_label.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignCenter)
+        self.add_water_label.setObjectName("add_water_label")
 
-        # largeBottle button
-        self.waterButton3 = QtWidgets.QPushButton(self.centralwidget)
-        self.waterButton3.setGeometry(QtCore.QRect(500, 50, 100, 100))
-        waterIcon3 = QtGui.QIcon()
-        waterIcon3.addPixmap(QtGui.QPixmap("CT_icons/largeBottle.png"))
-        self.waterButton3.setIcon(waterIcon3)
-        self.waterButton3.setProperty('flat', False)
-        self.waterButton3.setIconSize(QtCore.QSize(50, 50))
-        self.waterButton3.setObjectName("waterButton3")
-        self.waterButton3.clicked.connect(self.largeBottleAdder)
+        # large bottle button
+        self.large_bottle_button = QtWidgets.QPushButton(self.centralwidget)
+        self.large_bottle_button.setGeometry(QtCore.QRect(500, 50, 100, 100))
+        large_bottle_icon = QtGui.QIcon()
+        large_bottle_icon.addPixmap(QtGui.QPixmap("CT_icons/largeBottle.png"))
+        self.large_bottle_button.setIcon(large_bottle_icon)
+        self.large_bottle_button.setProperty('flat', False)
+        self.large_bottle_button.setIconSize(QtCore.QSize(50, 50))
+        self.large_bottle_button.setObjectName("large_bottle_button")
+        self.large_bottle_button.clicked.connect(self.add_large_bottle)
 
-        # smallBottle button
-        self.waterButton2 = QtWidgets.QPushButton(self.centralwidget)
-        self.waterButton2.setGeometry(QtCore.QRect(500, 200, 100, 100))
-        waterIcon2 = QtGui.QIcon()
-        waterIcon2.addPixmap(QtGui.QPixmap("CT_icons/smallBottle.png"))
-        self.waterButton2.setIcon(waterIcon2)
-        self.waterButton2.setProperty('flat', False)
-        self.waterButton2.setIconSize(QtCore.QSize(50, 50))
-        self.waterButton2.setObjectName("waterButton2")
-        self.waterButton2.clicked.connect(self.smallBottleAdder)
+        # small bottle button
+        self.small_bottle_button = QtWidgets.QPushButton(self.centralwidget)
+        self.small_bottle_button.setGeometry(QtCore.QRect(500, 200, 100, 100))
+        small_bottle_icon = QtGui.QIcon()
+        small_bottle_icon.addPixmap(QtGui.QPixmap("CT_icons/smallBottle.png"))
+        self.small_bottle_button.setIcon(small_bottle_icon)
+        self.small_bottle_button.setProperty('flat', False)
+        self.small_bottle_button.setIconSize(QtCore.QSize(50, 50))
+        self.small_bottle_button.setObjectName("small_bottle_button")
+        self.small_bottle_button.clicked.connect(self.add_small_bottle)
 
-        # waterCup button
-        self.waterButton1 = QtWidgets.QPushButton(self.centralwidget)
-        self.waterButton1.setGeometry(QtCore.QRect(500, 350, 100, 100)) # +30x30 in size
-        waterIcon1 = QtGui.QIcon()
-        waterIcon1.addPixmap(QtGui.QPixmap("CT_icons/waterCup.png"))
-        self.waterButton1.setIcon(waterIcon1)
-        self.waterButton1.setProperty('flat', False)
-        self.waterButton1.setIconSize(QtCore.QSize(30, 30))
-        self.waterButton1.setObjectName("waterButton1")
-        self.waterButton1.clicked.connect(self.waterCupAdder)
+        # glass of water button
+        self.glass_button = QtWidgets.QPushButton(self.centralwidget)
+        self.glass_button.setGeometry(QtCore.QRect(500, 350, 100, 100))
+        glass_icon = QtGui.QIcon()
+        glass_icon.addPixmap(QtGui.QPixmap("CT_icons/waterCup.png"))
+        self.glass_button.setIcon(glass_icon)
+        self.glass_button.setProperty('flat', False)
+        self.glass_button.setIconSize(QtCore.QSize(30, 30))
+        self.glass_button.setObjectName("glass_button")
+        self.glass_button.clicked.connect(self.add_glass)
 
-        # subtractWater button
-        self.subWaterButton = QtWidgets.QPushButton(self.centralwidget)
-        self.subWaterButton.setGeometry(QtCore.QRect(517.5, 500, 65, 65))   # +20x20 in size
-        spillIcon = QtGui.QIcon()
-        spillIcon.addPixmap(QtGui.QPixmap("CT_icons/spill.png"))
-        self.subWaterButton.setIcon(spillIcon)
-        self.subWaterButton.setProperty('flat', False)
-        self.subWaterButton.setIconSize(QtCore.QSize(30, 30))
-        self.subWaterButton.setObjectName("subWaterButton")
-        self.subWaterButton.clicked.connect(self.waterSubtractor)
+        # subtract water button
+        self.sub_water_button = QtWidgets.QPushButton(self.centralwidget)
+        self.sub_water_button.setGeometry(QtCore.QRect(517.5, 500, 65, 65))
+        spill_icon = QtGui.QIcon()
+        spill_icon.addPixmap(QtGui.QPixmap("CT_icons/spill.png"))
+        self.sub_water_button.setIcon(spill_icon)
+        self.sub_water_button.setProperty('flat', False)
+        self.sub_water_button.setIconSize(QtCore.QSize(30, 30))
+        self.sub_water_button.setObjectName("sub_water_button")
+        self.sub_water_button.clicked.connect(self.subtract_water)
         
-        # largeBottle label
-        self.largeBottleText = QtWidgets.QLabel(self.centralwidget)
-        self.largeBottleText.setGeometry(QtCore.QRect(500, 150, 100, 20))
-        self.largeBottleText.setStyleSheet(CT_stylesheets.text_label_font1)
-        self.largeBottleText.setScaledContents(False)
-        self.largeBottleText.setAlignment(QtCore.Qt.AlignCenter)
-        self.largeBottleText.setObjectName("largeBottleText")
+        # large bottle label
+        self.large_bottle_text = QtWidgets.QLabel(self.centralwidget)
+        self.large_bottle_text.setGeometry(QtCore.QRect(500, 150, 100, 20))
+        self.large_bottle_text.setStyleSheet(CT_stylesheets.text_label_font1)
+        self.large_bottle_text.setScaledContents(False)
+        self.large_bottle_text.setAlignment(QtCore.Qt.AlignCenter)
+        self.large_bottle_text.setObjectName("large_bottle_text")
 
-        # smallBottle label
-        self.smallBottleText = QtWidgets.QLabel(self.centralwidget)
-        self.smallBottleText.setGeometry(QtCore.QRect(500, 300, 100, 20))
-        self.smallBottleText.setStyleSheet(CT_stylesheets.text_label_font1)
-        self.smallBottleText.setScaledContents(False)
-        self.smallBottleText.setAlignment(QtCore.Qt.AlignCenter)
-        self.smallBottleText.setObjectName("smallBottleText")
+        # small bottle label
+        self.small_bottle_text = QtWidgets.QLabel(self.centralwidget)
+        self.small_bottle_text.setGeometry(QtCore.QRect(500, 300, 100, 20))
+        self.small_bottle_text.setStyleSheet(CT_stylesheets.text_label_font1)
+        self.small_bottle_text.setScaledContents(False)
+        self.small_bottle_text.setAlignment(QtCore.Qt.AlignCenter)
+        self.small_bottle_text.setObjectName("small_bottle_text")
 
-        # waterCup label
-        self.waterCupText = QtWidgets.QLabel(self.centralwidget)
-        self.waterCupText.setGeometry(QtCore.QRect(500, 450, 100, 20))
-        self.waterCupText.setStyleSheet(CT_stylesheets.text_label_font1)
-        self.waterCupText.setScaledContents(False)
-        self.waterCupText.setAlignment(QtCore.Qt.AlignCenter)
-        self.waterCupText.setObjectName("waterCupText")
+        # glass of water label
+        self.glass_text = QtWidgets.QLabel(self.centralwidget)
+        self.glass_text.setGeometry(QtCore.QRect(500, 450, 100, 20))
+        self.glass_text.setStyleSheet(CT_stylesheets.text_label_font1)
+        self.glass_text.setScaledContents(False)
+        self.glass_text.setAlignment(QtCore.Qt.AlignCenter)
+        self.glass_text.setObjectName("glass_text")
 
-        # subtractWater label
-        self.subWaterText = QtWidgets.QLabel(self.centralwidget)
-        self.subWaterText.setGeometry(QtCore.QRect(517.5, 565, 65, 20))
-        self.subWaterText.setStyleSheet(CT_stylesheets.text_label_font1)
-        self.subWaterText.setScaledContents(False)
-        self.subWaterText.setAlignment(QtCore.Qt.AlignCenter)
-        self.subWaterText.setObjectName("subWaterText")
+        # subtract water label
+        self.sub_water_text = QtWidgets.QLabel(self.centralwidget)
+        self.sub_water_text.setGeometry(QtCore.QRect(517.5, 565, 65, 20))
+        self.sub_water_text.setStyleSheet(CT_stylesheets.text_label_font1)
+        self.sub_water_text.setScaledContents(False)
+        self.sub_water_text.setAlignment(QtCore.Qt.AlignCenter)
+        self.sub_water_text.setObjectName("sub_water_text")
 
         # manage calories label
-        self.addCaloriesLabel = QtWidgets.QLabel(self.centralwidget)
-        self.addCaloriesLabel.setGeometry(QtCore.QRect(640, 10, 120, 30))
-        self.addCaloriesLabel.setStyleSheet(CT_stylesheets.text_label_font2)
-        self.addCaloriesLabel.setScaledContents(False)
-        self.addCaloriesLabel.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignCenter)
-        self.addCaloriesLabel.setObjectName("addCaloriesLabel")
+        self.add_calories_label = QtWidgets.QLabel(self.centralwidget)
+        self.add_calories_label.setGeometry(QtCore.QRect(640, 10, 120, 30))
+        self.add_calories_label.setStyleSheet(CT_stylesheets.text_label_font2)
+        self.add_calories_label.setScaledContents(False)
+        self.add_calories_label.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignCenter)
+        self.add_calories_label.setObjectName("add_calories_label")
 
-        # meatButton
-        self.calButton3 = QtWidgets.QPushButton(self.centralwidget)
-        self.calButton3.setGeometry(QtCore.QRect(650, 50, 100, 100))
-        calIcon3 = QtGui.QIcon()
-        calIcon3.addPixmap(QtGui.QPixmap("CT_icons/meat.png"))
-        self.calButton3.setIcon(calIcon3)
-        self.calButton3.setProperty('flat', False)
-        self.calButton3.setIconSize(QtCore.QSize(50, 50))
-        self.calButton3.setObjectName("calButton3")
-        self.calButton3.clicked.connect(self.meatAdder)
+        # meat button
+        self.meat_button = QtWidgets.QPushButton(self.centralwidget)
+        self.meat_button.setGeometry(QtCore.QRect(650, 50, 100, 100))
+        meat_icon = QtGui.QIcon()
+        meat_icon.addPixmap(QtGui.QPixmap("CT_icons/meat.png"))
+        self.meat_button.setIcon(meat_icon)
+        self.meat_button.setProperty('flat', False)
+        self.meat_button.setIconSize(QtCore.QSize(50, 50))
+        self.meat_button.setObjectName("meat_button")
+        self.meat_button.clicked.connect(self.add_meat)
         
-        # eggsButton
-        self.calButton2 = QtWidgets.QPushButton(self.centralwidget)
-        self.calButton2.setGeometry(QtCore.QRect(650, 200, 100, 100))
-        calIcon2 = QtGui.QIcon()
-        calIcon2.addPixmap(QtGui.QPixmap("CT_icons/eggs.png"))
-        self.calButton2.setIcon(calIcon2)
-        self.calButton2.setProperty('flat', False)
-        self.calButton2.setIconSize(QtCore.QSize(50, 50))
-        self.calButton2.setObjectName("calButton2")
-        self.calButton2.clicked.connect(self.eggsAdder)
+        # eggs button
+        self.eggs_button = QtWidgets.QPushButton(self.centralwidget)
+        self.eggs_button.setGeometry(QtCore.QRect(650, 200, 100, 100))
+        eggs_icon = QtGui.QIcon()
+        eggs_icon.addPixmap(QtGui.QPixmap("CT_icons/eggs.png"))
+        self.eggs_button.setIcon(eggs_icon)
+        self.eggs_button.setProperty('flat', False)
+        self.eggs_button.setIconSize(QtCore.QSize(50, 50))
+        self.eggs_button.setObjectName("eggs_button")
+        self.eggs_button.clicked.connect(self.add_eggs)
 
-        # sandwichButton
-        self.calButton1 = QtWidgets.QPushButton(self.centralwidget)
-        self.calButton1.setGeometry(QtCore.QRect(650, 350, 100, 100))
-        calIcon1 = QtGui.QIcon()
-        calIcon1.addPixmap(QtGui.QPixmap("CT_icons/sandwich.png"))
-        self.calButton1.setIcon(calIcon1)
-        self.calButton1.setProperty('flat', False)
-        self.calButton1.setIconSize(QtCore.QSize(30, 30))
-        self.calButton1.setObjectName("calButton1")
-        self.calButton1.clicked.connect(self.sandwichAdder)
+        # sandwich button
+        self.sandwich_button = QtWidgets.QPushButton(self.centralwidget)
+        self.sandwich_button.setGeometry(QtCore.QRect(650, 350, 100, 100))
+        sandwich_icon = QtGui.QIcon()
+        sandwich_icon.addPixmap(QtGui.QPixmap("CT_icons/sandwich.png"))
+        self.sandwich_button.setIcon(sandwich_icon)
+        self.sandwich_button.setProperty('flat', False)
+        self.sandwich_button.setIconSize(QtCore.QSize(30, 30))
+        self.sandwich_button.setObjectName("sandwich_button")
+        self.sandwich_button.clicked.connect(self.add_sandwich)
 
-        # subtractCalories button
-        self.subCalBtn = QtWidgets.QPushButton(self.centralwidget)
-        self.subCalBtn.setGeometry(QtCore.QRect(667.5, 500, 65, 65))
-        run_dark_icon = QtGui.QIcon()
-        run_dark_icon.addPixmap(QtGui.QPixmap("CT_icons/runDark.png"))
-        self.subCalBtn.setIcon(run_dark_icon)
-        self.subCalBtn.setProperty('flat', False)
-        self.subCalBtn.setIconSize(QtCore.QSize(30, 30))
-        self.subCalBtn.setObjectName("subCalBtn")
-        self.subCalBtn.clicked.connect(self.calSubtractor)
+        # subtract calories button
+        self.sub_calories_button = QtWidgets.QPushButton(self.centralwidget)
+        self.sub_calories_button.setGeometry(QtCore.QRect(667.5, 500, 65, 65))
+        sub_cal_icon_dark = QtGui.QIcon()
+        sub_cal_icon_dark.addPixmap(QtGui.QPixmap("CT_icons/runDark.png"))
+        self.sub_calories_button.setIcon(sub_cal_icon_dark)
+        self.sub_calories_button.setProperty('flat', False)
+        self.sub_calories_button.setIconSize(QtCore.QSize(30, 30))
+        self.sub_calories_button.setObjectName("sub_calories_button")
+        self.sub_calories_button.clicked.connect(self.subtract_calories)
 
         # meat label
-        self.meatText = QtWidgets.QLabel(self.centralwidget)
-        self.meatText.setGeometry(QtCore.QRect(650, 150, 100, 20))
-        self.meatText.setStyleSheet(CT_stylesheets.text_label_font1)
-        self.meatText.setScaledContents(False)
-        self.meatText.setAlignment(QtCore.Qt.AlignCenter)
-        self.meatText.setObjectName("meatText")
+        self.meat_text = QtWidgets.QLabel(self.centralwidget)
+        self.meat_text.setGeometry(QtCore.QRect(650, 150, 100, 20))
+        self.meat_text.setStyleSheet(CT_stylesheets.text_label_font1)
+        self.meat_text.setScaledContents(False)
+        self.meat_text.setAlignment(QtCore.Qt.AlignCenter)
+        self.meat_text.setObjectName("meat_text")
 
         # eggs label
-        self.eggsText = QtWidgets.QLabel(self.centralwidget)
-        self.eggsText.setGeometry(QtCore.QRect(650, 300, 100, 20))
-        self.eggsText.setStyleSheet(CT_stylesheets.text_label_font1)
-        self.eggsText.setScaledContents(False)
-        self.eggsText.setAlignment(QtCore.Qt.AlignCenter)
-        self.eggsText.setObjectName("eggsText")
+        self.eggs_text = QtWidgets.QLabel(self.centralwidget)
+        self.eggs_text.setGeometry(QtCore.QRect(650, 300, 100, 20))
+        self.eggs_text.setStyleSheet(CT_stylesheets.text_label_font1)
+        self.eggs_text.setScaledContents(False)
+        self.eggs_text.setAlignment(QtCore.Qt.AlignCenter)
+        self.eggs_text.setObjectName("eggs_text")
 
         # sandwich label
-        self.sandwichText = QtWidgets.QLabel(self.centralwidget)
-        self.sandwichText.setGeometry(QtCore.QRect(650, 450, 100, 20))
-        self.sandwichText.setStyleSheet(CT_stylesheets.text_label_font1)
-        self.sandwichText.setScaledContents(False)
-        self.sandwichText.setAlignment(QtCore.Qt.AlignCenter)
-        self.sandwichText.setObjectName("sandwichText")
+        self.sandwich_text = QtWidgets.QLabel(self.centralwidget)
+        self.sandwich_text.setGeometry(QtCore.QRect(650, 450, 100, 20))
+        self.sandwich_text.setStyleSheet(CT_stylesheets.text_label_font1)
+        self.sandwich_text.setScaledContents(False)
+        self.sandwich_text.setAlignment(QtCore.Qt.AlignCenter)
+        self.sandwich_text.setObjectName("sandwich_text")
 
-        # subCal label
-        self.subCalText = QtWidgets.QLabel(self.centralwidget)
-        self.subCalText.setGeometry(QtCore.QRect(667.5, 565, 65, 20))   # 50 pixels from button
-        self.subCalText.setStyleSheet(CT_stylesheets.text_label_font1)
-        self.subCalText.setScaledContents(False)
-        self.subCalText.setAlignment(QtCore.Qt.AlignCenter)
-        self.subCalText.setObjectName("subCalText")
+        # sub cal label
+        self.sub_calories_text = QtWidgets.QLabel(self.centralwidget)
+        self.sub_calories_text.setGeometry(QtCore.QRect(667.5, 565, 65, 20))   # 50 pixels from button
+        self.sub_calories_text.setStyleSheet(CT_stylesheets.text_label_font1)
+        self.sub_calories_text.setScaledContents(False)
+        self.sub_calories_text.setAlignment(QtCore.Qt.AlignCenter)
+        self.sub_calories_text.setObjectName("sub_calories_text")
 
         # meal time logger label
-        self.clockText = QtWidgets.QLabel(self.centralwidget)
-        self.clockText.setGeometry(QtCore.QRect(300, 10, 120, 30))
-        self.clockText.setStyleSheet(CT_stylesheets.text_label_font2)
-        self.clockText.setScaledContents(False)
-        self.clockText.setAlignment(QtCore.Qt.AlignCenter)
-        self.clockText.setObjectName("clockText")
+        self.clock_text = QtWidgets.QLabel(self.centralwidget)
+        self.clock_text.setGeometry(QtCore.QRect(300, 10, 120, 30))
+        self.clock_text.setStyleSheet(CT_stylesheets.text_label_font2)
+        self.clock_text.setScaledContents(False)
+        self.clock_text.setAlignment(QtCore.Qt.AlignCenter)
+        self.clock_text.setObjectName("clock_text")
 
         # meal times list label
-        self.mealText = QtWidgets.QLabel(self.centralwidget)
-        self.mealText.setGeometry(QtCore.QRect(300, 160, 120, 220))
-        self.mealText.setStyleSheet(CT_stylesheets.text_label_font1)
-        self.mealText.setScaledContents(False)
-        self.mealText.setAlignment(QtCore.Qt.AlignHCenter|QtCore.Qt.AlignTop)
-        self.mealText.setObjectName("mealText")
+        self.meal_text = QtWidgets.QLabel(self.centralwidget)
+        self.meal_text.setGeometry(QtCore.QRect(300, 160, 120, 220))
+        self.meal_text.setStyleSheet(CT_stylesheets.text_label_font1)
+        self.meal_text.setScaledContents(False)
+        self.meal_text.setAlignment(QtCore.Qt.AlignHCenter|QtCore.Qt.AlignTop)
+        self.meal_text.setObjectName("meal_text")
         
-        # MENUBAR
+        # menu_bar
         # set screenshot folder menu option
         self.select_action = QtWidgets.QAction(MainWindow)
         self.select_action.setStatusTip('Select screenshots folder')
@@ -481,25 +438,25 @@ class ConsumptionTracker():
         self.set_calories_4000cal_action.triggered.connect(self.set_calories_to_4000)
 
         # creating menu bar itself
-        self.menubar = QtWidgets.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 759, 21))
-        self.menubar.setObjectName("menubar")
+        self.menu_bar = QtWidgets.QMenuBar(MainWindow)
+        self.menu_bar.setGeometry(QtCore.QRect(0, 0, 759, 21))
+        self.menu_bar.setObjectName("menu_bar")
     
         # creating file menu
-        self.file_menu = QtWidgets.QMenu(self.menubar)
+        self.file_menu = QtWidgets.QMenu(self.menu_bar)
         self.file_menu.setObjectName("file_menu")
         
         if self.light_on is True:
-            self.menubar.setStyleSheet(CT_stylesheets.menubar_light)
+            self.menu_bar.setStyleSheet(CT_stylesheets.menu_bar_light)
         else:
-            self.menubar.setStyleSheet(CT_stylesheets.menubar_dark)
+            self.menu_bar.setStyleSheet(CT_stylesheets.menu_bar_dark)
 
         # creating max values/water/calories/help menus
-        self.set_max_values_menu = QtWidgets.QMenu(self.menubar)
+        self.set_max_values_menu = QtWidgets.QMenu(self.menu_bar)
         self.set_max_values_menu.setObjectName("set_max_values_menu")
         self.set_water_menu = QtWidgets.QMenu(self.set_max_values_menu)
         self.set_calories_menu = QtWidgets.QMenu(self.set_max_values_menu)
-        self.help_menu = QtWidgets.QMenu(self.menubar)
+        self.help_menu = QtWidgets.QMenu(self.menu_bar)
         self.help_menu.setObjectName('help_menu')
 
         # creating about action | general about, current build?
@@ -516,10 +473,10 @@ class ConsumptionTracker():
         self.file_menu.addAction(self.select_action)
         self.file_menu.addSeparator()
         self.file_menu.addAction(self.reset_values_action)
-        self.menubar.addAction(self.file_menu.menuAction())
+        self.menu_bar.addAction(self.file_menu.menuAction())
         
         # setting up set max values menu
-        self.menubar.addAction(self.set_max_values_menu.menuAction())
+        self.menu_bar.addAction(self.set_max_values_menu.menuAction())
         self.set_max_values_menu.addAction(self.set_water_menu.menuAction())
         self.set_max_values_menu.addSeparator()
         self.set_max_values_menu.addAction(self.set_calories_menu.menuAction())
@@ -543,87 +500,87 @@ class ConsumptionTracker():
         self.set_calories_menu.addAction(self.set_calories_4000cal_action)
 
         # setting up help menu
-        self.menubar.addAction(self.help_menu.menuAction())
+        self.menu_bar.addAction(self.help_menu.menuAction())
         self.help_menu.addAction(self.about_action)
         self.help_menu.addAction(self.project_page_action)
 
-        MainWindow.setMenuBar(self.menubar)
+        MainWindow.setMenuBar(self.menu_bar)
         MainWindow.setCentralWidget(self.centralwidget)
 
-        # toolbar
-        self.toolBar = QtWidgets.QToolBar(MainWindow)
-        self.toolBar.setFloatable(False)
-        self.toolBar.setMovable(False)
-        self.toolBar.setObjectName("toolBar")
-        MainWindow.addToolBar(QtCore.Qt.TopToolBarArea, self.toolBar)
+        # tool bar
+        self.tool_bar = QtWidgets.QToolBar(MainWindow)
+        self.tool_bar.setFloatable(False)
+        self.tool_bar.setMovable(False)
+        self.tool_bar.setObjectName("tool_bar")
+        MainWindow.addToolBar(QtCore.Qt.TopToolBarArea, self.tool_bar)
         
         if self.light_on is True:
-            self.toolBar.setStyleSheet(CT_stylesheets.toolbar_light)
+            self.tool_bar.setStyleSheet(CT_stylesheets.tool_bar_light)
         else:
-            self.toolBar.setStyleSheet(CT_stylesheets.toolbar_dark)
+            self.tool_bar.setStyleSheet(CT_stylesheets.tool_bar_dark)
 
         # swap female/male image button
-        body_swapper_btn = QtWidgets.QAction(QtGui.QIcon("CT_icons/swapBody.png"),
+        swap_body_button = QtWidgets.QAction(QtGui.QIcon("CT_icons/swapBody.png"),
                                      "Male/female", MainWindow)
-        body_swapper_btn.triggered.connect(self.image_swapper)
-        self.toolBar.addAction(body_swapper_btn)
+        swap_body_button.triggered.connect(self.swap_body_image)
+        self.tool_bar.addAction(swap_body_button)
 
         # reset app button
-        resetBtn = QtWidgets.QAction(QtGui.QIcon("CT_icons/reset.png"),
+        reset_button = QtWidgets.QAction(QtGui.QIcon("CT_icons/reset.png"),
                                      "Reset app", MainWindow)
-        resetBtn.triggered.connect(self.reset_app)
-        self.toolBar.addAction(resetBtn)
+        reset_button.triggered.connect(self.reset_app)
+        self.tool_bar.addAction(reset_button)
 
         # save screenshot button
-        ssBtn = QtWidgets.QAction(QtGui.QIcon("CT_icons/screenshooter.png"),
+        ss_button = QtWidgets.QAction(QtGui.QIcon("CT_icons/screenshooter.png"),
                                   "Save screenshot", MainWindow)
-        ssBtn.triggered.connect(self.take_screenshot)
-        self.toolBar.addAction(ssBtn)
+        ss_button.triggered.connect(self.take_screenshot)
+        self.tool_bar.addAction(ss_button)
 
         # switch appearance button
-        self.appearance_Btn = QtWidgets.QAction(QtGui.QIcon("CT_icons/darken.png"),
+        self.appearance_button = QtWidgets.QAction(QtGui.QIcon("CT_icons/darken.png"),
                                           'Darken', MainWindow)
-        self.appearance_Btn.triggered.connect(self.switch_appearance)
-        self.toolBar.addAction(self.appearance_Btn)
+        self.appearance_button.triggered.connect(self.switch_appearance)
+        self.tool_bar.addAction(self.appearance_button)
 
         # minimize to tray button
-        self.minimize_Btn = QtWidgets.QAction(QtGui.QIcon("CT_icons/shrink.png"),
+        self.minimize_button = QtWidgets.QAction(QtGui.QIcon("CT_icons/shrink.png"),
                                           'Minimize to tray', MainWindow)
-        self.minimize_Btn.triggered.connect(self.minimize)
-        self.toolBar.addAction(self.minimize_Btn)
+        self.minimize_button.triggered.connect(self.minimize)
+        self.tool_bar.addAction(self.minimize_button)
 
         # hour logger
-        self.hourEdit = QtWidgets.QTimeEdit(self.centralwidget)
-        self.hourEdit.setGeometry(QtCore.QRect(300, 50, 60, 50))
-        self.hourEdit.setStyleSheet("font: 20pt \"Segoe UI\"""; color: black")  #
-        self.hourEdit.setAlignment(QtCore.Qt.AlignCenter)
-        self.hourEdit.setCurrentSection(QtWidgets.QDateTimeEdit.HourSection)        
-        self.hourEdit.setObjectName("hourEdit")
+        self.hour_edit = QtWidgets.QTimeEdit(self.centralwidget)
+        self.hour_edit.setGeometry(QtCore.QRect(300, 50, 60, 50))
+        self.hour_edit.setStyleSheet("font: 20pt \"Segoe UI\"""; color: black")
+        self.hour_edit.setAlignment(QtCore.Qt.AlignCenter)
+        self.hour_edit.setCurrentSection(QtWidgets.QDateTimeEdit.HourSection)        
+        self.hour_edit.setObjectName("hour_edit")
 
         # minute logger
-        self.minEdit = QtWidgets.QTimeEdit(self.centralwidget)
-        self.minEdit.setGeometry(QtCore.QRect(359, 50, 60, 50))
-        self.minEdit.setStyleSheet("font: 20pt \"Segoe UI\"""; color: black")
-        self.minEdit.setAlignment(QtCore.Qt.AlignCenter)
-        self.minEdit.setCurrentSection(QtWidgets.QDateTimeEdit.MinuteSection)
-        self.minEdit.setObjectName("minEdit")
+        self.min_edit = QtWidgets.QTimeEdit(self.centralwidget)
+        self.min_edit.setGeometry(QtCore.QRect(359, 50, 60, 50))
+        self.min_edit.setStyleSheet("font: 20pt \"Segoe UI\"""; color: black")
+        self.min_edit.setAlignment(QtCore.Qt.AlignCenter)
+        self.min_edit.setCurrentSection(QtWidgets.QDateTimeEdit.MinuteSection)
+        self.min_edit.setObjectName("min_edit")
 
         # meal time logging button
-        self.mealTimeBtn = QtWidgets.QPushButton(self.centralwidget)
-        self.mealTimeBtn.setGeometry(QtCore.QRect(300, 100, 120, 25))
-        mealTimeIcon = QtGui.QIcon()
-        mealTimeIcon.addPixmap(QtGui.QPixmap("CT_icons/clock.png"))
-        self.mealTimeBtn.setIcon(mealTimeIcon)
-        self.mealTimeBtn.setIconSize(QtCore.QSize(20, 20))
-        self.mealTimeBtn.setObjectName('mealTimeBtn')
-        self.mealTimeBtn.clicked.connect(self.meal_logger)
+        self.meal_time_button = QtWidgets.QPushButton(self.centralwidget)
+        self.meal_time_button.setGeometry(QtCore.QRect(300, 100, 120, 25))
+        meal_time_icon = QtGui.QIcon()
+        meal_time_icon.addPixmap(QtGui.QPixmap("CT_icons/clock.png"))
+        self.meal_time_button.setIcon(meal_time_icon)
+        self.meal_time_button.setIconSize(QtCore.QSize(20, 20))
+        self.meal_time_button.setObjectName('meal_time_button')
+        self.meal_time_button.clicked.connect(self.meal_logger)
 
         # set time to now button
-        self.get_current_time_btn = QtWidgets.QPushButton(self.centralwidget)
-        self.get_current_time_btn.setGeometry(QtCore.QRect(300, 125, 120, 25))  # 25
-        self.get_current_time_btn.setObjectName('get_current_time_btn')
-        self.get_current_time_btn.setStyleSheet("font: 9pt \"Segoe UI\";\n;""text-align: center")
-        self.get_current_time_btn.clicked.connect(self.time_to_current_moment)
+        self.get_current_time_button = QtWidgets.QPushButton(self.centralwidget)
+        self.get_current_time_button.setGeometry(QtCore.QRect(300, 125, 120, 25))  # 25
+        self.get_current_time_button.setObjectName('get_current_time_button')
+        self.get_current_time_button.setStyleSheet("font: 9pt \"Segoe UI\";\n;""text-align: center")
+        self.get_current_time_button.clicked.connect(self.set_time_to_present)
 
         if self.reset_app_value is True:
             if self.previous_time < self.current_time:
@@ -637,7 +594,7 @@ class ConsumptionTracker():
     def save_data(self):
         CT_backend.save_data(self)
 
-    # MENUBAR FUNCTIONS
+    # MENU BAR FUNCTIONS
     def select_directory(self):
         CT_backend.select_directory(self)
 
@@ -692,7 +649,7 @@ class ConsumptionTracker():
     def open_project_page(self):
         CT_backend.open_project_page(self)
 
-    # TOOLBAR functions
+    # tool bar functions
     def reset_app(self):
         CT_backend.reset_app(self)
 
@@ -711,37 +668,37 @@ class ConsumptionTracker():
         MainWindow.show()
         self.tray.hide()
     
-    def image_swapper(self):
-        CT_backend.image_swapper(self)
+    def swap_body_image(self):
+        CT_backend.swap_body_image(self)
 
     # WATER MANAGEMENT functions
-    def waterSubtractor(self):
-        CT_backend.water_subtractor(self)
+    def subtract_water(self):
+        CT_backend.subtract_water(self)
 
-    def waterCupAdder(self):
-        CT_backend.waterCupAdder(self)
+    def add_glass(self):
+        CT_backend.add_glass(self)
 
-    def smallBottleAdder(self):
-        CT_backend.smallBottleAdder(self)
+    def add_small_bottle(self):
+        CT_backend.add_small_bottle(self)
 
-    def largeBottleAdder(self):
-        CT_backend.largeBottleAdder(self)
+    def add_large_bottle(self):
+        CT_backend.add_large_bottle(self)
 
-    def calSubtractor(self):
-        CT_backend.calSubtractor(self)
+    def subtract_calories(self):
+        CT_backend.subtract_calories(self)
 
-    def sandwichAdder(self):
-        CT_backend.sandwichAdder(self)
+    def add_sandwich(self):
+        CT_backend.add_sandwich(self)
     
-    def eggsAdder(self):
-        CT_backend.eggsAdder(self)
+    def add_eggs(self):
+        CT_backend.add_eggs(self)
 
-    def meatAdder(self):
-        CT_backend.meatAdder(self)
+    def add_meat(self):
+        CT_backend.add_meat(self)
 
     # MEAL TIME LOGGING functions
-    def time_to_current_moment(self):
-        CT_backend.time_to_current_moment(self)
+    def set_time_to_present(self):
+        CT_backend.set_time_to_present(self)
         
     def meal_logger(self):
         CT_backend.meal_logger(self)
@@ -751,18 +708,18 @@ class ConsumptionTracker():
         MainWindow.setWindowTitle(_translate("MainWindow", "Consumption Tracker"))
         
         # BUTTON FUNCTIONALITY labels
-        self.waterCupText.setText(_translate("MainWindow", "2 dl"))
-        self.smallBottleText.setText(_translate("MainWindow", "5 dl"))
-        self.largeBottleText.setText(_translate("MainWindow", "10 dl"))
-        self.addWaterLabel.setText(_translate('MainWindow', 'Manage water'))
-        self.subWaterText.setText(_translate('MainWindow', '-1 dl'))
-        self.addCaloriesLabel.setText(_translate('MainWindow', 'Manage calories'))
-        self.subCalText.setText(_translate('MainWindow', '-100 cal'))
-        self.sandwichText.setText(_translate('MainWindow', '200 cal'))
-        self.eggsText.setText(_translate('MainWindow', '500 cal'))
-        self.meatText.setText(_translate('MainWindow', '1000 cal'))
-        self.clockText.setText(_translate('MainWindow', "Set meal times"))
-        self.get_current_time_btn.setText(_translate('MainWindow', "Set current time"))
+        self.glass_text.setText(_translate("MainWindow", "2 dl"))
+        self.small_bottle_text.setText(_translate("MainWindow", "5 dl"))
+        self.large_bottle_text.setText(_translate("MainWindow", "10 dl"))
+        self.add_water_label.setText(_translate('MainWindow', 'Manage water'))
+        self.sub_water_text.setText(_translate('MainWindow', '-1 dl'))
+        self.add_calories_label.setText(_translate('MainWindow', 'Manage calories'))
+        self.sub_calories_text.setText(_translate('MainWindow', '-100 cal'))
+        self.sandwich_text.setText(_translate('MainWindow', '200 cal'))
+        self.eggs_text.setText(_translate('MainWindow', '500 cal'))
+        self.meat_text.setText(_translate('MainWindow', '1000 cal'))
+        self.clock_text.setText(_translate('MainWindow', "Set meal times"))
+        self.get_current_time_button.setText(_translate('MainWindow', "Set current time"))
 
         # CENTRALWIDGET TEXT labels
         self.calories_LCD_per_sign.setText(_translate("MainWindow", "/"))
@@ -771,42 +728,42 @@ class ConsumptionTracker():
         self.water_unit_label.setText(_translate('MainWindow', 'dl'))
         
         if self.meal_logger_presses < 1:
-            self.mealText.setText(_translate('MainWindow', self.null_meal))
+            self.meal_text.setText(_translate('MainWindow', self.null_meal))
         elif self.meal_logger_presses == 1:
-            self.mealText.setText(_translate('MainWindow', self.first_meal))
+            self.meal_text.setText(_translate('MainWindow', self.first_meal))
         elif self.meal_logger_presses == 2:
-            self.mealText.setText(_translate('MainWindow', self.second_meal))
+            self.meal_text.setText(_translate('MainWindow', self.second_meal))
         elif self.meal_logger_presses == 3:
-            self.mealText.setText(_translate('MainWindow', self.third_meal))
+            self.meal_text.setText(_translate('MainWindow', self.third_meal))
         elif self.meal_logger_presses == 4:
-            self.mealText.setText(_translate('MainWindow', self.fourth_meal))
+            self.meal_text.setText(_translate('MainWindow', self.fourth_meal))
         elif self.meal_logger_presses == 5:
-            self.mealText.setText(_translate('MainWindow', self.fifth_meal))
+            self.meal_text.setText(_translate('MainWindow', self.fifth_meal))
         elif self.meal_logger_presses == 6:
-            self.mealText.setText(_translate('MainWindow', self.sixth_meal))
+            self.meal_text.setText(_translate('MainWindow', self.sixth_meal))
 
-        # TIMEEDIT settings
-        self.hourEdit.setDisplayFormat(_translate("MainWindow", "HH"))
-        self.minEdit.setDisplayFormat(_translate("MainWindow", "mm"))
-        self.hourEdit.setTime(self.saved_hour)
-        self.minEdit.setTime(self.saved_min)
+        # TIME EDIT settings
+        self.hour_edit.setDisplayFormat(_translate("MainWindow", "HH"))
+        self.min_edit.setDisplayFormat(_translate("MainWindow", "mm"))
+        self.hour_edit.setTime(self.saved_hour)
+        self.min_edit.setTime(self.saved_min)
 
         # BUTTON tooltips
-        self.subWaterButton.setToolTip(_translate('MainWindow', '<html><head/><body><p align="center">Subtract 1 dl</p></body></html>'))
-        self.waterButton1.setToolTip(_translate('MainWindow', '<html><head/><body><p align="center">Add 2 dl</p></body></html>'))
-        self.waterButton2.setToolTip(_translate('MainWindow', '<html><head/><body><p align="center">Add 5 dl</p></body></html>'))
-        self.waterButton3.setToolTip(_translate('MainWindow', '<html><head/><body><p align="center">Add 10 dl</p></body></html>'))
-        self.subCalBtn.setToolTip(_translate('MainWindow', '<html><head/><body><p align="center">Subtract 100 cal</p></body></html>'))
-        self.calButton1.setToolTip(_translate('MainWindow', '<html><head/><body><p align="center">Add 200 cal</p></body></html>'))
-        self.calButton2.setToolTip(_translate('MainWindow', '<html><head/><body><p align="center">Add 500 cal</p></body></html>'))
-        self.calButton3.setToolTip(_translate('MainWindow', '<html><head/><body><p align="center">Add 1000 cal</p></body></html>'))
-        self.mealTimeBtn.setToolTip(_translate('MainWindow', '<html><head/><body><p align="center">Log time</p></body></html>'))
+        self.sub_water_button.setToolTip(_translate('MainWindow', '<html><head/><body><p align="center">Subtract 1 dl</p></body></html>'))
+        self.glass_button.setToolTip(_translate('MainWindow', '<html><head/><body><p align="center">Add 2 dl</p></body></html>'))
+        self.small_bottle_button.setToolTip(_translate('MainWindow', '<html><head/><body><p align="center">Add 5 dl</p></body></html>'))
+        self.large_bottle_button.setToolTip(_translate('MainWindow', '<html><head/><body><p align="center">Add 10 dl</p></body></html>'))
+        self.sub_calories_button.setToolTip(_translate('MainWindow', '<html><head/><body><p align="center">Subtract 100 cal</p></body></html>'))
+        self.sandwich_button.setToolTip(_translate('MainWindow', '<html><head/><body><p align="center">Add 200 cal</p></body></html>'))
+        self.eggs_button.setToolTip(_translate('MainWindow', '<html><head/><body><p align="center">Add 500 cal</p></body></html>'))
+        self.meat_button.setToolTip(_translate('MainWindow', '<html><head/><body><p align="center">Add 1000 cal</p></body></html>'))
+        self.meal_time_button.setToolTip(_translate('MainWindow', '<html><head/><body><p align="center">Log time</p></body></html>'))
 
         # PROGRESS BAR tooltips
-        self.waterBar.setToolTip((_translate('MainWindow', '<html><head/><body><p align="center">Current water</p></body></html>')))
-        self.calBar.setToolTip((_translate('MainWindow', '<html><head/><body><p align="center">Current calories</p></body></html>')))
+        self.water_bar.setToolTip((_translate('MainWindow', '<html><head/><body><p align="center">Current water</p></body></html>')))
+        self.cal_bar.setToolTip((_translate('MainWindow', '<html><head/><body><p align="center">Current calories</p></body></html>')))
 
-        # MENUBAR titles
+        # menu_bar titles
         self.file_menu.setTitle(_translate("MainWindow", "File"))
         self.help_menu.setTitle(_translate("MainWindow", "Help"))
         

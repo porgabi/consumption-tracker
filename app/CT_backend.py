@@ -15,10 +15,9 @@ main_icon.addPixmap(QtGui.QPixmap("CT_icons\\main.png"),
 MainWindow.setWindowIcon(main_icon)
 
 
-# data saver
 def save_data(self):
-    hourRaw = str(self.hourEdit.time())
-    minRaw = str(self.minEdit.time())
+    hourRaw = str(self.hour_edit.time())
+    minRaw = str(self.min_edit.time())
     if len(hourRaw) == 24:
         hourSliced = hourRaw[19]
     else:
@@ -39,34 +38,66 @@ def save_data(self):
     self.last_day = datetime.datetime.now().day
     self.last_month = datetime.datetime.now().month
     self.last_year = datetime.datetime.now().year
-    
-    data = {}
-    data['saved_variables'] = []
-    data['saved_variables'].append({
-        'current_calories':    self.current_calories,
-        'current_water':       self.current_water,
-        'meal_logger_presses': self.meal_logger_presses,
-        'light_on':        str(self.light_on),
-        'ss_directory':        self.ss_directory,
-        'first_meal':          self.first_meal,
-        'second_meal':         self.second_meal,
-        'third_meal':          self.third_meal,
-        'fourth_meal':         self.fourth_meal,
-        'fifth_meal':          self.fifth_meal,
-        'sixth_meal':          self.sixth_meal,
-        'saved_hour':      int(hour),
-        'saved_minute':    int(minutes),
-        'current_body':        self.current_body,
-        'reset_app_value': str(self.reset_app_value),
-        'last_time': (self.last_day, self.last_month, self.last_year),
-        'max_water':           self.max_water,
-        'max_calories':        self.max_calories
-    })
-    with open('data.json', 'w') as outfile:
-        json.dump(data, outfile, indent=4)
+
+    saved_data = {}
+    saved_data['current_water'] = self.current_water
+    saved_data['current_calories'] = self.current_calories
+    saved_data['meal_logger_presses'] = self.meal_logger_presses
+    saved_data['light_on'] = str(self.light_on)
+    saved_data['ss_directory'] = self.ss_directory
+    saved_data['first_meal'] = self.first_meal
+    saved_data['second_meal'] = self.second_meal
+    saved_data['third_meal'] = self.third_meal
+    saved_data['fourth_meal'] = self.fourth_meal
+    saved_data['fifth_meal'] = self.fifth_meal
+    saved_data['sixth_meal'] = self.sixth_meal
+    saved_data['saved_hour'] = int(hour)
+    saved_data['saved_minute'] = int(minutes)
+    saved_data['current_body'] = self.current_body
+    saved_data['reset_app_value'] = str(self.reset_app_value)
+    saved_data['last_time'] = (self.last_day, self.last_month, self.last_year)
+    saved_data['max_water'] = self.max_water
+    saved_data['max_calories'] = self.max_calories
+
+    with open('saved_data.json', 'w') as outfile:
+        json.dump(saved_data, outfile, indent=4)
 
 
-# MENUBAR FUNCTIONS
+# TODO loopify in the future
+def load_data(self):
+        with open('saved_data.json') as json_file:
+            saved_data = json.load(json_file)
+            self.current_calories = saved_data.get('current_calories')
+            self.current_water = saved_data.get('current_water')
+            self.meal_logger_presses = saved_data.get('meal_logger_presses')
+            self.light_on = bool('True' == saved_data.get('light_on'))
+            self.current_body = saved_data.get('current_body')
+            self.ss_directory = saved_data.get('ss_directory')
+            self.null_meal = ''
+            self.first_meal = saved_data.get('first_meal')
+            self.second_meal = saved_data.get('second_meal')
+            self.third_meal = saved_data.get('third_meal')
+            self.fourth_meal = saved_data.get('fourth_meal')
+            self.fifth_meal = saved_data.get('fifth_meal')
+            self.sixth_meal = saved_data.get('sixth_meal')
+            saved_hour_raw = saved_data.get('saved_hour')
+            self.saved_hour = QtCore.QTime(saved_hour_raw, 0)
+            saved_min_raw = saved_data.get('saved_minute')
+            self.saved_min = QtCore.QTime(0, saved_min_raw)
+            self.reset_app_value = bool('True' == saved_data.get('reset_app_value'))
+            self.current_time_raw = datetime.datetime.now()
+            self.current_time = datetime.datetime(self.current_time_raw.year,
+                                                  self.current_time_raw.month,
+                                                  self.current_time_raw.day)
+            self.last_time = saved_data.get('last_time')
+            self.previous_time = datetime.datetime(self.last_time[2],\
+                                                   self.last_time[1],\
+                                                   self.last_time[0])
+            self.max_water = saved_data.get('max_water')
+            self.max_calories = saved_data.get('max_calories')
+
+
+# menu_bar FUNCTIONS
 def select_directory(self):
     root = tk.Tk()
     root.withdraw()
@@ -90,11 +121,11 @@ def set_water(self):
     self.max_human_value = self.max_water + self.max_calories
     if self.max_water <= self.current_water:
         self.current_water = self.max_water
-    self.waterBar.setMaximum(self.max_water)
-    self.waterBar.setProperty('value', self.current_water)
+    self.water_bar.setMaximum(self.max_water)
+    self.water_bar.setProperty('value', self.current_water)
     self.human_bar.setMaximum(self.max_human_value)
     self.human_bar.setProperty('value', self.current_water + self.current_calories)
-    self.waterNumber.setProperty('intValue', (self.current_water / 100))
+    self.water_number.setProperty('intValue', (self.current_water / 100))
     self.max_water_number.setProperty("intValue", self.max_water / 100)
     self.save_data()
 
@@ -137,11 +168,11 @@ def set_calories(self):
     self.max_human_value = self.max_water + self.max_calories
     if self.max_calories <= self.current_calories:
         self.current_calories = self.max_calories
-    self.calBar.setMaximum(self.max_calories)
-    self.calBar.setProperty('value', self.current_calories)
+    self.cal_bar.setMaximum(self.max_calories)
+    self.cal_bar.setProperty('value', self.current_calories)
     self.human_bar.setMaximum(self.max_human_value)
     self.human_bar.setProperty('value', self.current_water + self.current_calories)
-    self.calNumber.setProperty('intValue', self.current_calories)
+    self.cal_number.setProperty('intValue', self.current_calories)
     self.max_calories_number.setProperty("intValue", self.max_calories)
     self.save_data()
 
@@ -214,21 +245,21 @@ def open_project_page(self):
 
 
 
-# TOOLBAR functions
+# tool bar functions
 def reset_app(self):
     self.current_water = 0
-    self.waterBar.setProperty('value', self.current_water)
-    self.waterNumber.setProperty('intValue', self.current_water)
+    self.water_bar.setProperty('value', self.current_water)
+    self.water_number.setProperty('intValue', self.current_water)
     self.current_calories = 0
-    self.calBar.setProperty('value', self.current_calories)
-    self.calNumber.setProperty('intValue', self.current_calories)
+    self.cal_bar.setProperty('value', self.current_calories)
+    self.cal_number.setProperty('intValue', self.current_calories)
     self.human_bar.setProperty('value', self.current_water + self.current_calories)
-    self.mealText.setText(self.null_meal)
+    self.meal_text.setText(self.null_meal)
     self.meal_logger_presses = 0
     self.saved_hour = QtCore.QTime(8, 0)
     self.saved_min = QtCore.QTime(8, 0)
-    self.hourEdit.setTime(QtCore.QTime(8, 0))
-    self.minEdit.setTime(QtCore.QTime(8, 0))
+    self.hour_edit.setTime(QtCore.QTime(8, 0))
+    self.min_edit.setTime(QtCore.QTime(8, 0))
     self.save_data()
 
 
@@ -257,39 +288,39 @@ def switch_appearance(self):
         self.light_on = False
         light_icon = QtGui.QIcon()
         light_icon.addPixmap(QtGui.QPixmap("CT_icons/lighten.png"))
-        self.appearance_Btn.setIcon(light_icon)
-        self.appearance_Btn.setToolTip('Lighten')
+        self.appearance_button.setIcon(light_icon)
+        self.appearance_button.setToolTip('Lighten')
         self.dark_palette = QtGui.QPalette()
         self.dark_palette.setColor(QtGui.QPalette.Window, QtGui.QColor(90, 90, 90))
         app.setPalette(self.dark_palette)
         
-        self.subWaterButton.setStyleSheet(CT_stylesheets.background_dark)
-        self.waterButton1.setStyleSheet(CT_stylesheets.background_dark)
-        self.waterButton2.setStyleSheet(CT_stylesheets.background_dark)
-        self.waterButton3.setStyleSheet(CT_stylesheets.background_dark)
-        self.subCalBtn.setStyleSheet(CT_stylesheets.background_dark)
-        self.calButton1.setStyleSheet(CT_stylesheets.background_dark)
-        self.calButton2.setStyleSheet(CT_stylesheets.background_dark)
-        self.calButton3.setStyleSheet(CT_stylesheets.background_dark)
-        self.waterBar.setStyleSheet(CT_stylesheets.water_bar_dark)
-        self.calBar.setStyleSheet(CT_stylesheets.cal_bar_dark)
+        self.sub_water_button.setStyleSheet(CT_stylesheets.background_dark)
+        self.glass_button.setStyleSheet(CT_stylesheets.background_dark)
+        self.small_bottle_button.setStyleSheet(CT_stylesheets.background_dark)
+        self.large_bottle_button.setStyleSheet(CT_stylesheets.background_dark)
+        self.sub_calories_button.setStyleSheet(CT_stylesheets.background_dark)
+        self.sandwich_button.setStyleSheet(CT_stylesheets.background_dark)
+        self.eggs_button.setStyleSheet(CT_stylesheets.background_dark)
+        self.meat_button.setStyleSheet(CT_stylesheets.background_dark)
+        self.water_bar.setStyleSheet(CT_stylesheets.water_bar_dark)
+        self.cal_bar.setStyleSheet(CT_stylesheets.cal_bar_dark)
 
         app.setStyleSheet(CT_stylesheets.tooltip_dark)
-        self.menubar.setStyleSheet(CT_stylesheets.menubar_dark)
+        self.menu_bar.setStyleSheet(CT_stylesheets.menu_bar_dark)
 
-        # TODO include water menu style in menubar stylesheet
+        # TODO include water menu style in menu_bar stylesheet
         self.set_water_menu.setStyleSheet(CT_stylesheets.secondary_menu_dark)
         self.set_calories_menu.setStyleSheet(CT_stylesheets.secondary_menu_dark)
 
-        self.toolBar.setStyleSheet(CT_stylesheets.toolbar_dark)
-        self.mealTimeBtn.setStyleSheet(CT_stylesheets.background_dark)
-        self.get_current_time_btn.setStyleSheet(CT_stylesheets.time_edit_dark)
+        self.tool_bar.setStyleSheet(CT_stylesheets.tool_bar_dark)
+        self.meal_time_button.setStyleSheet(CT_stylesheets.background_dark)
+        self.get_current_time_button.setStyleSheet(CT_stylesheets.time_edit_dark)
 
-        self.hourEdit.setStyleSheet(CT_stylesheets.time_edit_dark)
-        self.minEdit.setStyleSheet(CT_stylesheets.time_edit_dark)
+        self.hour_edit.setStyleSheet(CT_stylesheets.time_edit_dark)
+        self.min_edit.setStyleSheet(CT_stylesheets.time_edit_dark)
         run_light_icon = QtGui.QIcon()
         run_light_icon.addPixmap(QtGui.QPixmap("CT_icons/runLight.png"))
-        self.subCalBtn.setIcon(run_light_icon)
+        self.sub_calories_button.setIcon(run_light_icon)
         
         if self.human_image_is_malebodylight == True:
             self.human_image.setPixmap(QtGui.QPixmap("CT_icons/malebodydark.png"))
@@ -303,35 +334,35 @@ def switch_appearance(self):
         self.light_on = True
         dark_icon = QtGui.QIcon()
         dark_icon.addPixmap(QtGui.QPixmap("CT_icons/darken.png"))
-        self.appearance_Btn.setIcon(dark_icon)
-        self.appearance_Btn.setToolTip('Darken')
+        self.appearance_button.setIcon(dark_icon)
+        self.appearance_button.setToolTip('Darken')
         self.light_palette = QtGui.QPalette()
         self.light_palette.setColor(QtGui.QPalette.Window, QtGui.QColor(255, 255, 255))
         app.setPalette(self.light_palette)
         app.setStyleSheet(CT_stylesheets.tooltip_light)
 
-        self.mealTimeBtn.setStyleSheet(CT_stylesheets.background_light)
-        self.get_current_time_btn.setStyleSheet(CT_stylesheets.time_edit_light)
-        self.subWaterButton.setStyleSheet(CT_stylesheets.background_light)
-        self.waterButton1.setStyleSheet(CT_stylesheets.background_light)
-        self.waterButton2.setStyleSheet(CT_stylesheets.background_light)
-        self.waterButton3.setStyleSheet(CT_stylesheets.background_light)
-        self.subCalBtn.setStyleSheet(CT_stylesheets.background_light)
-        self.calButton1.setStyleSheet(CT_stylesheets.background_light)
-        self.calButton2.setStyleSheet(CT_stylesheets.background_light)
-        self.calButton3.setStyleSheet(CT_stylesheets.background_light)
-        self.waterBar.setStyleSheet(CT_stylesheets.water_bar_light)
-        self.calBar.setStyleSheet(CT_stylesheets.cal_bar_light)
-        self.menubar.setStyleSheet(CT_stylesheets.menubar_light)
+        self.meal_time_button.setStyleSheet(CT_stylesheets.background_light)
+        self.get_current_time_button.setStyleSheet(CT_stylesheets.time_edit_light)
+        self.sub_water_button.setStyleSheet(CT_stylesheets.background_light)
+        self.glass_button.setStyleSheet(CT_stylesheets.background_light)
+        self.small_bottle_button.setStyleSheet(CT_stylesheets.background_light)
+        self.large_bottle_button.setStyleSheet(CT_stylesheets.background_light)
+        self.sub_calories_button.setStyleSheet(CT_stylesheets.background_light)
+        self.sandwich_button.setStyleSheet(CT_stylesheets.background_light)
+        self.eggs_button.setStyleSheet(CT_stylesheets.background_light)
+        self.meat_button.setStyleSheet(CT_stylesheets.background_light)
+        self.water_bar.setStyleSheet(CT_stylesheets.water_bar_light)
+        self.cal_bar.setStyleSheet(CT_stylesheets.cal_bar_light)
+        self.menu_bar.setStyleSheet(CT_stylesheets.menu_bar_light)
         self.set_water_menu.setStyleSheet(CT_stylesheets.secondary_menu_light)
         self.set_calories_menu.setStyleSheet(CT_stylesheets.secondary_menu_light)
-        self.toolBar.setStyleSheet(CT_stylesheets.toolbar_light)
+        self.tool_bar.setStyleSheet(CT_stylesheets.tool_bar_light)
 
-        self.hourEdit.setStyleSheet(CT_stylesheets.time_edit_light)
-        self.minEdit.setStyleSheet(CT_stylesheets.time_edit_light)
-        run_dark_icon = QtGui.QIcon()
-        run_dark_icon.addPixmap(QtGui.QPixmap("CT_icons/runDark.png"))
-        self.subCalBtn.setIcon(run_dark_icon)
+        self.hour_edit.setStyleSheet(CT_stylesheets.time_edit_light)
+        self.min_edit.setStyleSheet(CT_stylesheets.time_edit_light)
+        sub_cal_icon_dark = QtGui.QIcon()
+        sub_cal_icon_dark.addPixmap(QtGui.QPixmap("CT_icons/runDark.png"))
+        self.sub_calories_button.setIcon(sub_cal_icon_dark)
         
         if self.human_image_is_malebodydark == True:
             self.human_image.setPixmap(QtGui.QPixmap("CT_icons/malebodylight.png"))
@@ -346,26 +377,7 @@ def switch_appearance(self):
         self.save_data()
 
 
-
-
-
-
-
-
-
-
-
-
-# def minimize(self):
-#     MainWindow.hide()
-#     print('entered in backend')
-#     self.tray.show()
-
-# def tray_icon_click(self, signal):
-#     MainWindow.show()
-#     self.tray.hide()
-
-def image_swapper(self):
+def swap_body_image(self):
     if self.light_on is True:
         if self.human_image_is_malebodylight is True:
             self.human_image.setPixmap(QtGui.QPixmap("CT_icons/femalebodylight.png"))
@@ -388,90 +400,90 @@ def image_swapper(self):
 
 
 # WATER MANAGEMENT functions
-def water_subtractor(self):
+def subtract_water(self):
     self.current_water -= 100
-    self.waterBar.setProperty('value', self.current_water)
+    self.water_bar.setProperty('value', self.current_water)
     if self.current_water <= 0:
-        self.waterBar.setProperty('value', 0)
+        self.water_bar.setProperty('value', 0)
         self.current_water = 0
     if self.current_water + self.current_calories <= 0:
         self.human_bar.setProperty('value', 0)
     self.human_bar.setProperty('value', self.current_water + self.current_calories)
-    self.waterNumber.setProperty('intValue', (self.current_water / 100))
+    self.water_number.setProperty('intValue', (self.current_water / 100))
     self.save_data()
 
 
 def water_adder(self):
-    self.waterBar.setProperty('value', self.current_water)
+    self.water_bar.setProperty('value', self.current_water)
     if self.current_water >= self.max_water:
-        self.waterBar.setProperty('value', self.max_water)
+        self.water_bar.setProperty('value', self.max_water)
         self.current_water = self.max_water
     if self.current_water + self.current_calories >= self.max_human_value:   
         self.human_bar.setProperty('value', self.max_human_value)
     self.human_bar.setProperty('value', self.current_water + self.current_calories)
-    self.waterNumber.setProperty('intValue', (self.current_water / 100))
+    self.water_number.setProperty('intValue', (self.current_water / 100))
     self.save_data()
 
 
-def waterCupAdder(self):
+def add_glass(self):
     self.current_water += 200
     water_adder(self)
 
 
-def smallBottleAdder(self):
+def add_small_bottle(self):
     self.current_water += 500
     water_adder(self)
 
 
-def largeBottleAdder(self):
+def add_large_bottle(self):
     self.current_water += 1000
     water_adder(self)
 
 
-def calSubtractor(self):
+def subtract_calories(self):
     self.current_calories -= 100
-    self.calBar.setProperty('value', self.current_calories)
+    self.cal_bar.setProperty('value', self.current_calories)
     if self.current_calories <= 0:
-        self.calBar.setProperty('value', 0)
+        self.cal_bar.setProperty('value', 0)
         self.current_calories = 0
     else:
         self.human_bar.setProperty('value', self.current_water + self.current_calories)
     if self.current_water + self.current_calories <= 0:
         self.human_bar.setProperty('value', 0)
     self.human_bar.setProperty('value', self.current_water + self.current_calories)
-    self.calNumber.setProperty('intValue', self.current_calories)
+    self.cal_number.setProperty('intValue', self.current_calories)
     self.save_data()
 
 
 def calories_adder(self):
-    self.calBar.setProperty('value', self.current_calories)
+    self.cal_bar.setProperty('value', self.current_calories)
     if self.current_calories >= self.max_calories:
-        self.calBar.setProperty('value', self.max_calories)
+        self.cal_bar.setProperty('value', self.max_calories)
         self.current_calories = self.max_calories
     if self.current_water + self.current_calories >= self.max_human_value:    
         self.human_bar.setProperty('value', self.max_human_value)
     self.human_bar.setProperty('value', self.current_water + self.current_calories)
-    self.calNumber.setProperty('intValue', self.current_calories)
+    self.cal_number.setProperty('intValue', self.current_calories)
     self.save_data()
 
 
-def sandwichAdder(self):
+def add_sandwich(self):
     self.current_calories += 200
     calories_adder(self)
 
 
-def eggsAdder(self):
+def add_eggs(self):
     self.current_calories += 500
     calories_adder(self)
 
 
-def meatAdder(self):
+def add_meat(self):
     self.current_calories += 1000
     calories_adder(self)
 
 
 # MEAL TIME LOGGING functions
-def time_to_current_moment(self):
+def set_time_to_present(self):
     current_time_raw = datetime.datetime.now()
     hour_now_raw = current_time_raw.strftime('%H')
     minute_now_raw = current_time_raw.strftime('%M')
@@ -479,15 +491,15 @@ def time_to_current_moment(self):
     minute_now = int(minute_now_raw)
     hh = QtCore.QTime(hour_now, 0)
     mm = QtCore.QTime(0, minute_now)
-    self.minEdit.setTime(mm)
-    self.hourEdit.setTime(hh)
+    self.min_edit.setTime(mm)
+    self.hour_edit.setTime(hh)
     self.save_data()
 
 
 def meal_logger(self):
     self.meal_logger_presses += 1
-    hourRaw = str(self.hourEdit.time())
-    minRaw = str(self.minEdit.time())
+    hourRaw = str(self.hour_edit.time())
+    minRaw = str(self.min_edit.time())
     if len(hourRaw) == 24:
         hourSliced = hourRaw[19]
     else:
@@ -509,22 +521,22 @@ def meal_logger(self):
     # good grief what is this abomination
     if self.meal_logger_presses == 1:
         self.first_meal = '1. ' + meal_time
-        self.mealText.setText(self.first_meal)
+        self.meal_text.setText(self.first_meal)
     elif self.meal_logger_presses == 2:
         self.second_meal = self.first_meal + '\n\n2. ' + meal_time
-        self.mealText.setText(self.second_meal)
+        self.meal_text.setText(self.second_meal)
     elif self.meal_logger_presses == 3:
         self.third_meal = self.second_meal + '\n\n3. ' + meal_time
-        self.mealText.setText(self.third_meal)
+        self.meal_text.setText(self.third_meal)
     elif self.meal_logger_presses == 4:
         self.fourth_meal = self.third_meal + '\n\n4. ' + meal_time
-        self.mealText.setText(self.fourth_meal)
+        self.meal_text.setText(self.fourth_meal)
     elif self.meal_logger_presses == 5:
         self.fifth_meal = self.fourth_meal + '\n\n5. ' + meal_time
-        self.mealText.setText(self.fifth_meal)
+        self.meal_text.setText(self.fifth_meal)
     elif self.meal_logger_presses == 6:
         self.sixth_meal = self.fifth_meal + '\n\n6. ' + meal_time
-        self.mealText.setText(self.sixth_meal)
+        self.meal_text.setText(self.sixth_meal)
     elif self.meal_logger_presses > 6:
         self.meal_logger_presses = 6
     self.save_data()

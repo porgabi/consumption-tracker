@@ -125,3 +125,4 @@ dmypy.json
 main.ico
 data.json
 .vscode/settings.json
+app/saved_data.json
