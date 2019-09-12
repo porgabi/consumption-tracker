@@ -1,3 +1,9 @@
+This version is a WIP and not currently functional. One could reasonably suggest it is a bit of an awful mess, and such statement would only barely miss the mark. Yet, progress is being made on the improved software structure, though it has proven to be quite a difficult task to figure out.
+
+Rest assured that it is, indeed, being pierced together.
+
+![Alt Text](https://i.imgur.com/mXnNxoN.gif)
+
 # Consumption Tracker
 
 Consumption Tracker is a program that tracks daily water and calories consumption through simple user input.
