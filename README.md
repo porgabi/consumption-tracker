@@ -1,3 +1,7 @@
+18/09 update -- starting to crack the puzzle at last, restored some basic functionality. Grinding away at PyQt signals/slots and their implementation, more commits to come in the next few days methinks.
+
+
+
 This version is a WIP and not currently functional. One could reasonably suggest it is a bit of an awful mess, and such statement would only barely miss the mark. Yet, progress is being made on the improved software structure, though it has proven to be quite a difficult task to figure out.
 
 Rest assured that it is, indeed, being pierced together.

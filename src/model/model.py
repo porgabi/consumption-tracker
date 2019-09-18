@@ -1,95 +1,181 @@
-# handles data, defines rules and behaviour
 from PyQt5.QtCore import QObject, pyqtSignal
-from PyQt5 import QtCore
-import json, datetime, os
+
 
 class Model(QObject):
-    
-    water_changed = pyqtSignal(int)
-    
-    @property
-    def water(self):
-        return self.current_water
 
+    # amount_changed = pyqtSignal(int)
+    # even_odd_changed = pyqtSignal(str)
+    # enable_reset_changed = pyqtSignal(bool)
+    # users_changed = pyqtSignal(list)
+    water_changed = pyqtSignal(int)
+    calories_changed = pyqtSignal(int)
+    human_bar_changed = pyqtSignal(int)
+    light_changed = pyqtSignal(bool)
+
+    # @property
+    # def water(self):
+    #     return self._current_water
+
+    # @property
+    # def users(self):
+    #     return self._users
 
     def add_water(self, value):
+        print('MODEL add water')
         # variable modified here
-        self._users.append(value)
-        
-        self.current_water += 200
-        print(self.current_water)
-        print('model add user')
+        # self._users.append(value)
+        self._current_water += value
+        if self._current_water >= self._max_water:
+            self._current_water = self._max_water
+        print('MODEL current water', self._current_water)
+        self.water_changed.emit(self._current_water)
 
-        self.water_changed.emit(self.current_water)
 
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+    def sub_water(self, value):
+        print('MODEL sub water')
+        self._current_water -= value
+        if self._current_water <= 0:
+            self._current_water = 0
+        print('MODEL current water', self._current_water)
+        self.water_changed.emit(self._current_water)
+
+
+    def add_calories(self, value):
+        print('MODEL add calories')
+        self._current_calories += value
+        if self._current_calories >= self._max_calories:
+            self._current_calories = self._max_calories
+        print('MODEL current calories', self._current_calories)
+        self.calories_changed.emit(self._current_calories)
+
+    def sub_calories(self, value):
+        print('MODEL sub calories')
+        self._current_calories -= value
+        if self._current_calories <= 0:
+            self._current_calories = 0
+
+        print('MODEL current calories', self._current_calories)
+        self.calories_changed.emit(self._current_calories)
+
+    def change_human_bar(self, value):
+        print('MODEL change human bar')
+        self.human_bar_changed.emit(self._current_water + self._current_calories)
+
+    def change_light(self, value):
+        print('\nMODEL change light')
+        print('value', value)
+        # if value is True:
+        #     value = False
+        #     self.light_changed.emit(value)
+
+        # else:
+        #     value = True
+        #     self.light_changed.emit(value)
+        self.light_changed.emit(value)
+
+        print('emitted value', value)
+
+
+    # def change_water_bar(self, value):
+    #     print('MODEL change water bar')
+
+    # def delete_user(self, value):
+    #     del self._users[value]
+    #     self.users_changed.emit(self._users)
+
+    @property
+    def water_bar_change(self):
+        return self._current_water
+
+    @water_bar_change.setter
+    def water_bar_change(self, value):
+        self._current_water = value
+        self.water_changed.emit(value)
+
+    @property
+    def cal_bar_change(self):
+        return self._current_calories
+
+    @cal_bar_change.setter
+    def cal_bar_change(self, value):
+        self._current_calories = value
+        self.calories_changed.emit(value)
+
+    @property
+    def human_bar_change(self):
+        return self._current_human_value
+
+    @human_bar_change.setter
+    def human_bar_change(self, value):
+        self._current_human_value = value
+        self.human_bar_changed.emit(value)
+
+
+
+
+
+    @property
+    def light_change(self):
+        return self._light_on
+
+    @light_change.setter
+    def light_change(self, value):
+        self._light_on = value
+        self.light_changed.emit(value)
+
+
+
+
     def __init__(self):
         super().__init__()
-        if 'saved_data.json' in os.listdir():
-            with open('saved_data.json') as json_file:
-                saved_data = json.load(json_file)
-                self.current_calories = saved_data.get('current_calories')
-                self.current_water = saved_data.get('current_water')
-                self.meal_logger_presses = saved_data.get('meal_logger_presses')
-                self.light_on = bool('True' == saved_data.get('light_on'))
-                self.current_body = saved_data.get('current_body')
-                self.ss_directory = saved_data.get('ss_directory')
-                self.null_meal = ''
-                self.first_meal = saved_data.get('first_meal')
-                self.second_meal = saved_data.get('second_meal')
-                self.third_meal = saved_data.get('third_meal')
-                self.fourth_meal = saved_data.get('fourth_meal')
-                self.fifth_meal = saved_data.get('fifth_meal')
-                self.sixth_meal = saved_data.get('sixth_meal')
-                saved_hour_raw = saved_data.get('saved_hour')
-                self.saved_hour = QtCore.QTime(saved_hour_raw, 0)
-                saved_min_raw = saved_data.get('saved_minute')
-                self.saved_min = QtCore.QTime(0, saved_min_raw)
-                self.reset_app_value = bool('True' == saved_data.get('reset_app_value'))
-                self.current_time_raw = datetime.datetime.now()
-                self.current_time = datetime.datetime(self.current_time_raw.year,
-                                                        self.current_time_raw.month,
-                                                        self.current_time_raw.day)
-                self.last_time = saved_data.get('last_time')
-                self.previous_time = datetime.datetime(self.last_time[2],\
-                                                        self.last_time[1],\
-                                                        self.last_time[0])
-                self.max_water = saved_data.get('max_water')
-                self.max_calories = saved_data.get('max_calories')
-        else:
-            # default values
-            self.current_calories = 0
-            self.current_water = 0
-            self.meal_logger_presses = 0
-            self.light_on = True
-            self.current_body = 'male_light'
-            self.ss_directory = ""
-            self.null_meal = ''
-            self.first_meal = ""
-            self.second_meal = ""
-            self.third_meal = ""
-            self.fourth_meal = ""
-            self.fifth_meal = ""
-            self.sixth_meal = ""
-            self.saved_hour = QtCore.QTime(8, 0)
-            self.saved_min = QtCore.QTime(0, 0)
-            self.reset_app_value = False
-            self.current_time_raw = datetime.datetime.now()
-            self.current_time = datetime.datetime(self.current_time_raw.year,
-                                                  self.current_time_raw.month,
-                                                  self.current_time_raw.day)
-            self.previous_time = self.current_time
-            self.max_water = 3000
-            self.max_calories = 2500
-        self.max_human_value = (self.max_water + self.max_calories)
-        self.home_path = os.environ['HOMEDRIVE'] + os.environ['HOMEPATH']
+
+        # variables defined here
+        self._max_water = 2000
+        self._max_calories = 3000
+        self._current_water = 0
+        self._current_calories = 0
+        self._max_human_value = self._max_water + self._max_calories
+        self._current_human_value = self._current_water + self._current_calories
+        self._light_on = True
+
+
+
+
+
+
+    # @property
+    # def amount(self):
+    #     return self._amount
+
+    # @amount.setter
+    # def amount(self, value):
+    #     self._amount = value
+    #     self.amount_changed.emit(value)
+
+
+
+
+
+
+
+    # @property
+    # def even_odd(self):
+    #     return self._even_odd
+
+    # @even_odd.setter
+    # def even_odd(self, value):
+    #     self._even_odd = value
+    #     self.even_odd_changed.emit(value)
+
+    # @property
+    # def enable_reset(self):
+    #     return self._enable_reset
+
+    # @enable_reset.setter
+    # def enable_reset(self, value):
+    #     self._enable_reset = value
+    #     self.enable_reset_changed.emit(value)
+
+    # starter values?
+
+        # self._users = ["hans"]

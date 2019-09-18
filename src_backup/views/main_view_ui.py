@@ -1,6 +1,6 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 import sys
-import CT_stylesheets
+# import CT_stylesheets
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -30,15 +30,13 @@ class Ui_MainWindow(object):
         self.human_image.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.human_image.setFrameShadow(QtWidgets.QFrame.Plain)
         self.human_image.setStyleSheet("border: 0px solid transparent;")
-        self.human_image.setScaledContents(True)
-
 
         # progress bar behind body silhouette
         self.human_bar = QtWidgets.QProgressBar(self.centralwidget)
         self.human_bar.setGeometry(QtCore.QRect(55, 10, 167, 500))
-        self.human_bar.setStyleSheet(CT_stylesheets.human_bar)
-        self.human_bar.setMaximum(5000)
-        self.human_bar.setProperty("value", 0)
+        # self.human_bar.setStyleSheet(CT_stylesheets.human_bar)
+        # self.human_bar.setMaximum(self.max_human_value)
+        # self.human_bar.setProperty("value", self.current_water + self.current_calories)
         self.human_bar.setTextVisible(False)
         self.human_bar.setOrientation(QtCore.Qt.Vertical)
         self.human_bar.setObjectName("human_bar")
@@ -48,22 +46,31 @@ class Ui_MainWindow(object):
         # water progress bar
         self.water_bar = QtWidgets.QProgressBar(self.centralwidget)
         self.water_bar.setGeometry(QtCore.QRect(20, 514, 250, 36))
-        self.water_bar.setMaximum(2000)
-        self.water_bar.setProperty('value', 0)
+        # if self.light_on is True:
+        #     self.water_bar.setStyleSheet(CT_stylesheets.water_bar_light)
+        # else:
+        #     self.water_bar.setStyleSheet(CT_stylesheets.water_bar_dark)
+        # self.water_bar.setMaximum(self.max_water)
+        self.water_bar.setProperty('value', 10)
+        # self.water_bar.setProperty('value', self.current_water)
         self.water_bar.setObjectName("water_bar")        
 
         # calories progress bar
         self.cal_bar = QtWidgets.QProgressBar(self.centralwidget)
         self.cal_bar.setGeometry(QtCore.QRect(20, 564, 250, 36))
-        self.cal_bar.setMaximum(3000)
-        self.cal_bar.setProperty("value", 0)        
+        # if self.light_on is True:
+        #     self.cal_bar.setStyleSheet(CT_stylesheets.cal_bar_light)
+        # else:
+        #     self.cal_bar.setStyleSheet(CT_stylesheets.cal_bar_dark)
+        # self.cal_bar.setMaximum(self.max_calories)
+        # self.cal_bar.setProperty("value", self.current_calories)        
         # self.cal_bar.setOrientation(QtCore.Qt.Horizontal)
         self.cal_bar.setObjectName("cal_bar")
 
         # current water LCD display
         self.water_number = QtWidgets.QLCDNumber(self.centralwidget)
         self.water_number.setGeometry(QtCore.QRect(290, 510, 100, 42))
-        self.water_number.setStyleSheet(CT_stylesheets.water_color)
+        # self.water_number.setStyleSheet(CT_stylesheets.water_color)
         self.water_number.setFrameShape(QtWidgets.QFrame.NoFrame)
         self.water_number.setDigitCount(2)
         self.water_number.setSegmentStyle(QtWidgets.QLCDNumber.Flat)
@@ -81,7 +88,7 @@ class Ui_MainWindow(object):
         # max water LCD display
         self.max_water_number = QtWidgets.QLCDNumber(self.centralwidget)
         self.max_water_number.setGeometry(QtCore.QRect(383, 510, 100, 42))
-        self.max_water_number.setStyleSheet(CT_stylesheets.water_color)
+        # self.max_water_number.setStyleSheet(CT_stylesheets.water_color)
         self.max_water_number.setFrameShape(QtWidgets.QFrame.NoFrame)
         self.max_water_number.setDigitCount(2)
         self.max_water_number.setSegmentStyle(QtWidgets.QLCDNumber.Flat)
@@ -99,7 +106,7 @@ class Ui_MainWindow(object):
         # current calories LCD display
         self.cal_number = QtWidgets.QLCDNumber(self.centralwidget)
         self.cal_number.setGeometry(QtCore.QRect(270, 560, 100, 42))
-        self.cal_number.setStyleSheet(CT_stylesheets.cal_color)
+        # self.cal_number.setStyleSheet(CT_stylesheets.cal_color)
         self.cal_number.setFrameShape(QtWidgets.QFrame.NoFrame)
         self.cal_number.setDigitCount(4)
         self.cal_number.setSegmentStyle(QtWidgets.QLCDNumber.Flat)
@@ -117,7 +124,7 @@ class Ui_MainWindow(object):
         # max calories LCD display
         self.max_calories_number = QtWidgets.QLCDNumber(self.centralwidget)
         self.max_calories_number.setGeometry(QtCore.QRect(364, 560, 100, 42))
-        self.max_calories_number.setStyleSheet(CT_stylesheets.cal_color)
+        # self.max_calories_number.setStyleSheet(CT_stylesheets.cal_color)
         self.max_calories_number.setFrameShape(QtWidgets.QFrame.NoFrame)
         self.max_calories_number.setDigitCount(4)
         self.max_calories_number.setSegmentStyle(QtWidgets.QLCDNumber.Flat)
@@ -135,7 +142,7 @@ class Ui_MainWindow(object):
         # manage water label
         self.add_water_label = QtWidgets.QLabel(self.centralwidget)
         self.add_water_label.setGeometry(QtCore.QRect(500, 10, 100, 30))
-        self.add_water_label.setStyleSheet(CT_stylesheets.text_label_font2)
+        # self.add_water_label.setStyleSheet(CT_stylesheets.text_label_font2)
         self.add_water_label.setScaledContents(False)
         self.add_water_label.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignCenter)
         self.add_water_label.setObjectName("add_water_label")
@@ -187,7 +194,7 @@ class Ui_MainWindow(object):
         # large bottle label
         self.large_bottle_text = QtWidgets.QLabel(self.centralwidget)
         self.large_bottle_text.setGeometry(QtCore.QRect(500, 150, 100, 20))
-        self.large_bottle_text.setStyleSheet(CT_stylesheets.text_label_font1)
+        # self.large_bottle_text.setStyleSheet(CT_stylesheets.text_label_font1)
         self.large_bottle_text.setScaledContents(False)
         self.large_bottle_text.setAlignment(QtCore.Qt.AlignCenter)
         self.large_bottle_text.setObjectName("large_bottle_text")
@@ -195,7 +202,7 @@ class Ui_MainWindow(object):
         # small bottle label
         self.small_bottle_text = QtWidgets.QLabel(self.centralwidget)
         self.small_bottle_text.setGeometry(QtCore.QRect(500, 300, 100, 20))
-        self.small_bottle_text.setStyleSheet(CT_stylesheets.text_label_font1)
+        # self.small_bottle_text.setStyleSheet(CT_stylesheets.text_label_font1)
         self.small_bottle_text.setScaledContents(False)
         self.small_bottle_text.setAlignment(QtCore.Qt.AlignCenter)
         self.small_bottle_text.setObjectName("small_bottle_text")
@@ -203,7 +210,7 @@ class Ui_MainWindow(object):
         # glass of water label
         self.glass_text = QtWidgets.QLabel(self.centralwidget)
         self.glass_text.setGeometry(QtCore.QRect(500, 450, 100, 20))
-        self.glass_text.setStyleSheet(CT_stylesheets.text_label_font1)
+        # self.glass_text.setStyleSheet(CT_stylesheets.text_label_font1)
         self.glass_text.setScaledContents(False)
         self.glass_text.setAlignment(QtCore.Qt.AlignCenter)
         self.glass_text.setObjectName("glass_text")
@@ -211,7 +218,7 @@ class Ui_MainWindow(object):
         # subtract water label
         self.sub_water_text = QtWidgets.QLabel(self.centralwidget)
         self.sub_water_text.setGeometry(QtCore.QRect(517.5, 565, 65, 20))
-        self.sub_water_text.setStyleSheet(CT_stylesheets.text_label_font1)
+        # self.sub_water_text.setStyleSheet(CT_stylesheets.text_label_font1)
         self.sub_water_text.setScaledContents(False)
         self.sub_water_text.setAlignment(QtCore.Qt.AlignCenter)
         self.sub_water_text.setObjectName("sub_water_text")
@@ -219,7 +226,7 @@ class Ui_MainWindow(object):
         # manage calories label
         self.add_calories_label = QtWidgets.QLabel(self.centralwidget)
         self.add_calories_label.setGeometry(QtCore.QRect(640, 10, 120, 30))
-        self.add_calories_label.setStyleSheet(CT_stylesheets.text_label_font2)
+        # self.add_calories_label.setStyleSheet(CT_stylesheets.text_label_font2)
         self.add_calories_label.setScaledContents(False)
         self.add_calories_label.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignCenter)
         self.add_calories_label.setObjectName("add_calories_label")
@@ -271,7 +278,7 @@ class Ui_MainWindow(object):
         # meat label
         self.meat_text = QtWidgets.QLabel(self.centralwidget)
         self.meat_text.setGeometry(QtCore.QRect(650, 150, 100, 20))
-        self.meat_text.setStyleSheet(CT_stylesheets.text_label_font1)
+        # self.meat_text.setStyleSheet(CT_stylesheets.text_label_font1)
         self.meat_text.setScaledContents(False)
         self.meat_text.setAlignment(QtCore.Qt.AlignCenter)
         self.meat_text.setObjectName("meat_text")
@@ -279,7 +286,7 @@ class Ui_MainWindow(object):
         # eggs label
         self.eggs_text = QtWidgets.QLabel(self.centralwidget)
         self.eggs_text.setGeometry(QtCore.QRect(650, 300, 100, 20))
-        self.eggs_text.setStyleSheet(CT_stylesheets.text_label_font1)
+        # self.eggs_text.setStyleSheet(CT_stylesheets.text_label_font1)
         self.eggs_text.setScaledContents(False)
         self.eggs_text.setAlignment(QtCore.Qt.AlignCenter)
         self.eggs_text.setObjectName("eggs_text")
@@ -287,7 +294,7 @@ class Ui_MainWindow(object):
         # sandwich label
         self.sandwich_text = QtWidgets.QLabel(self.centralwidget)
         self.sandwich_text.setGeometry(QtCore.QRect(650, 450, 100, 20))
-        self.sandwich_text.setStyleSheet(CT_stylesheets.text_label_font1)
+        # self.sandwich_text.setStyleSheet(CT_stylesheets.text_label_font1)
         self.sandwich_text.setScaledContents(False)
         self.sandwich_text.setAlignment(QtCore.Qt.AlignCenter)
         self.sandwich_text.setObjectName("sandwich_text")
@@ -295,7 +302,7 @@ class Ui_MainWindow(object):
         # sub cal label
         self.sub_calories_text = QtWidgets.QLabel(self.centralwidget)
         self.sub_calories_text.setGeometry(QtCore.QRect(667.5, 565, 65, 20))   # 50 pixels from button
-        self.sub_calories_text.setStyleSheet(CT_stylesheets.text_label_font1)
+        # self.sub_calories_text.setStyleSheet(CT_stylesheets.text_label_font1)
         self.sub_calories_text.setScaledContents(False)
         self.sub_calories_text.setAlignment(QtCore.Qt.AlignCenter)
         self.sub_calories_text.setObjectName("sub_calories_text")
@@ -303,7 +310,7 @@ class Ui_MainWindow(object):
         # meal time logger label
         self.clock_text = QtWidgets.QLabel(self.centralwidget)
         self.clock_text.setGeometry(QtCore.QRect(300, 10, 120, 30))
-        self.clock_text.setStyleSheet(CT_stylesheets.text_label_font2)
+        # self.clock_text.setStyleSheet(CT_stylesheets.text_label_font2)
         self.clock_text.setScaledContents(False)
         self.clock_text.setAlignment(QtCore.Qt.AlignCenter)
         self.clock_text.setObjectName("clock_text")
@@ -311,7 +318,7 @@ class Ui_MainWindow(object):
         # meal times list label
         self.meal_text = QtWidgets.QLabel(self.centralwidget)
         self.meal_text.setGeometry(QtCore.QRect(300, 160, 120, 220))
-        self.meal_text.setStyleSheet(CT_stylesheets.text_label_font1)
+        # self.meal_text.setStyleSheet(CT_stylesheets.text_label_font1)
         self.meal_text.setScaledContents(False)
         self.meal_text.setAlignment(QtCore.Qt.AlignHCenter|QtCore.Qt.AlignTop)
         self.meal_text.setObjectName("meal_text")
@@ -480,7 +487,7 @@ class Ui_MainWindow(object):
         # hour logger
         self.hour_edit = QtWidgets.QTimeEdit(self.centralwidget)
         self.hour_edit.setGeometry(QtCore.QRect(300, 50, 60, 50))
-        # self.hour_edit.setStyleSheet("font: 20pt \"Segoe UI\"""; color: black")
+        self.hour_edit.setStyleSheet("font: 20pt \"Segoe UI\"""; color: black")
         self.hour_edit.setAlignment(QtCore.Qt.AlignCenter)
         self.hour_edit.setCurrentSection(QtWidgets.QDateTimeEdit.HourSection)        
         self.hour_edit.setObjectName("hour_edit")
@@ -488,7 +495,7 @@ class Ui_MainWindow(object):
         # minute logger
         self.min_edit = QtWidgets.QTimeEdit(self.centralwidget)
         self.min_edit.setGeometry(QtCore.QRect(359, 50, 60, 50))
-        # self.min_edit.setStyleSheet("font: 20pt \"Segoe UI\"""; color: black")
+        self.min_edit.setStyleSheet("font: 20pt \"Segoe UI\"""; color: black")
         self.min_edit.setAlignment(QtCore.Qt.AlignCenter)
         self.min_edit.setCurrentSection(QtWidgets.QDateTimeEdit.MinuteSection)
         self.min_edit.setObjectName("min_edit")
