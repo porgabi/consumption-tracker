@@ -1,4 +1,4 @@
-20/09 update -- arrived at the next wall to repeated bump my head against. Need to figure out how to apply stylesheets to the app object in main module.
+20/09 update -- arrived at the next wall to repeatedly bump my head against. Need to figure out how to apply stylesheets to the app object in main module.
 May have the solution in a few days. Yes, most definitely in a few days.
 
 
