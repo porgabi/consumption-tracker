@@ -172,9 +172,9 @@ tool_bar_dark = ("""
 )
 
 
-background_light = "background: rgb(255, 255, 255)"
+background_light = "background: rgb(255, 255, 255); color: black"
 
-background_dark = "background: rgb(90, 90, 90)"
+background_dark = "background: rgb(90, 90, 90); color: white"
 
 secondary_menu_light = ("""
     QMenu {
@@ -200,9 +200,9 @@ secondary_menu_dark = ("""
     """
 )
 
-time_edit_light = "background: rgb(255, 255, 255); color: black"
+time_edit_light = "background: rgb(255, 255, 255); font: 20pt \"Segoe UI\"""; color: black"
 
-time_edit_dark = "background: rgb(90, 90, 90); color: white"
+time_edit_dark = "background: rgb(90, 90, 90); font: 20pt \"Segoe UI\"""; color: white"
 
 tooltip_light = ("""
     QToolTip { 

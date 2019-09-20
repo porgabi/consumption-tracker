@@ -1,8 +1,11 @@
+20/09 update -- arrived at the next wall to repeated bump my head against. Need to figure out how to apply stylesheets to the app object in main module.
+May have the solution in a few days. Yes, most definitely in a few days.
+
+
 18/09 update -- starting to crack the puzzle at last, restored some basic functionality. Grinding away at PyQt signals/slots and their implementation, more commits to come in the next few days methinks.
 
 
-
-This version is a WIP and not currently functional. One could reasonably suggest it is a bit of an awful mess, and such statement would only barely miss the mark. Yet, progress is being made on the improved software structure, though it has proven to be quite a difficult task to figure out.
+This version is a WIP and not properly functional. One could reasonably suggest it is a bit of an awful mess, and such statement would only barely miss the mark. Yet, progress is being made on the improved software structure, though it has proven to be quite a difficult task to figure out.
 
 Rest assured that it is, indeed, being pierced together.
 

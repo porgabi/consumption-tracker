@@ -19,9 +19,9 @@ class Ui_MainWindow(object):
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
 
-        # # tray icon
-        # self.tray = QtWidgets.QSystemTrayIcon(main_icon, app)
-        # # self.tray.activated['QSystemTrayIcon::ActivationReason'].connect(self.tray_icon_click)
+        # tray icon
+        # self.tray = QtWidgets.QSystemTrayIcon(main_icon, superApp)
+        # self.tray.activated['QSystemTrayIcon::ActivationReason'].connect(self.tray_icon_click)
         # self.tray.setToolTip('Consumption Tracker')
 
         # human image
@@ -448,22 +448,22 @@ class Ui_MainWindow(object):
         MainWindow.addToolBar(QtCore.Qt.TopToolBarArea, self.tool_bar)
 
         # swap female/male image button
-        swap_body_button = QtWidgets.QAction(QtGui.QIcon("CT_icons/swapBody.png"),
+        self.swap_body_button = QtWidgets.QAction(QtGui.QIcon("CT_icons/swapBody.png"),
                                      "Male/female", MainWindow)
         # swap_body_button.triggered.connect(self.swap_body_image)
-        self.tool_bar.addAction(swap_body_button)
+        self.tool_bar.addAction(self.swap_body_button)
 
         # reset app button
-        reset_button = QtWidgets.QAction(QtGui.QIcon("CT_icons/reset.png"),
+        self.reset_button = QtWidgets.QAction(QtGui.QIcon("CT_icons/reset.png"),
                                      "Reset app", MainWindow)
         # reset_button.triggered.connect(self.reset_app)
-        self.tool_bar.addAction(reset_button)
+        self.tool_bar.addAction(self.reset_button)
 
         # save screenshot button
-        ss_button = QtWidgets.QAction(QtGui.QIcon("CT_icons/screenshooter.png"),
+        self.ss_button = QtWidgets.QAction(QtGui.QIcon("CT_icons/screenshooter.png"),
                                   "Save screenshot", MainWindow)
         # ss_button.triggered.connect(self.take_screenshot)
-        self.tool_bar.addAction(ss_button)
+        self.tool_bar.addAction(self.ss_button)
 
         # switch appearance button
         self.appearance_button = QtWidgets.QAction(QtGui.QIcon("CT_icons/darken.png"),
@@ -507,7 +507,6 @@ class Ui_MainWindow(object):
         self.get_current_time_button = QtWidgets.QPushButton(self.centralwidget)
         self.get_current_time_button.setGeometry(QtCore.QRect(300, 125, 120, 25))  # 25
         self.get_current_time_button.setObjectName('get_current_time_button')
-        self.get_current_time_button.setStyleSheet("font: 9pt \"Segoe UI\";\n;""text-align: center")
         # self.get_current_time_button.clicked.connect(self.set_time_to_present)
 
         self.retranslateUi(MainWindow)
@@ -537,7 +536,6 @@ class Ui_MainWindow(object):
         self.water_LCD_per_sign.setText(_translate("MainWindow", "/"))
         self.water_unit_label.setText(_translate('MainWindow', 'dl'))
 
-        self.meal_text.setText(_translate('MainWindow', 'none'))
 
         # TIME EDIT settings
         self.hour_edit.setDisplayFormat(_translate("MainWindow", "HH"))

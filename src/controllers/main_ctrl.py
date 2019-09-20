@@ -26,6 +26,11 @@ class MainController(QObject):
         print('MAIN CTRL add water')
 
     @pyqtSlot(int)
+    def change_max_water(self, value):
+        self._model.change_max_water(value)
+        print('MAIN CTRL change max water')
+
+    @pyqtSlot(int)
     def sub_water(self, value):
         self._model.sub_water(value)
         self.change_human_bar(value)
@@ -36,8 +41,10 @@ class MainController(QObject):
         self._model.add_calories(value)
         self.change_human_bar(value)
 
-        print('MAIN CTRL add calories')
-    
+    @pyqtSlot(int)
+    def change_max_calories(self, value):
+        self._model.change_max_calories(value)
+
     @pyqtSlot(int)
     def sub_calories(self, value):
         self._model.sub_calories(value)
@@ -53,7 +60,29 @@ class MainController(QObject):
     @pyqtSlot(bool)
     def change_light(self, value):
         self._model.light_change = False if value else True
-        print('MAIN CTRL value', value)
+        print('light on:', self._model._light_on)
+
+
+
+    @pyqtSlot()
+    def reset_app(self):
+        self._model.reset_app()
+
+    
+    @pyqtSlot()
+    def set_to_current_time(self):
+        self._model.set_to_current_time()
+
+    @pyqtSlot()
+    def log_meal(self):
+        self._model.log_meal()
+
+
+
+    @pyqtSlot(bool)
+    def change_reset_app_value(self, value):
+        self._model.reset_app_value_change = False if value else True
+        print('reset app value:', self._model._reset_app_value)
 
     # @pyqtSlot(int)
     # def water_changed(self, value):

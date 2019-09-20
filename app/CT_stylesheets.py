@@ -200,9 +200,9 @@ secondary_menu_dark = ("""
     """
 )
 
-time_edit_light = ("background: rgb(255, 255, 255); font: 20pt \"Segoe UI\"""; color: black")
+time_edit_light = "background: rgb(255, 255, 255); font: 10pt \"Segoe UI\"""; color: black"
 
-time_edit_dark = "background: rgb(90, 90, 90); font: 20pt \"Segoe UI\"""; color: white"
+time_edit_dark = "background: rgb(90, 90, 90); font: 10pt \"Segoe UI\"""; color: white"
 
 tooltip_light = ("""
     QToolTip { 
